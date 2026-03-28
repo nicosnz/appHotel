@@ -1,0 +1,69 @@
+/* =========================
+   HOME LAYOUT
+========================= */
+
+.home {
+  margin-left: 24rem; /* espacio del navbar */
+  padding: var(--spacing-xl);
+}
+
+/* =========================
+   TITLE
+========================= */
+
+.home__title {
+  font-size: 2.4rem;
+  font-weight: 700;
+  color: var(--color-primary);
+  margin-bottom: var(--spacing-xl);
+}
+
+/* =========================
+   CARDS CONTAINER
+========================= */
+
+.home__cards {
+  display: flex;
+  gap: var(--spacing-lg);
+  flex-wrap: wrap;
+}
+
+/* =========================
+   CARD
+========================= */
+
+.home__card {
+  flex: 1;
+  min-width: 28rem;
+
+  background-color: var(--color-secondary);
+  border: 3px solid var(--color-dark);
+  border-radius: var(--radius-lg);
+
+  padding: var(--spacing-lg);
+
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+/* =========================
+   CARD TITLE
+========================= */
+
+.home__card-title {
+  font-size: 1.6rem;
+  font-weight: 600;
+  color: var(--color-dark);
+}
+
+/* =========================
+   CARD CONTENT (placeholder)
+========================= */
+
+.home__card-content {
+  height: 6rem;
+  border: 2px solid var(--color-dark);
+  border-radius: var(--radius-md);
+  background-color: #fff;
+}

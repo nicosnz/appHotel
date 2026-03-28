@@ -1,0 +1,70 @@
+/* =========================
+   SIDEBAR
+========================= */
+
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 24rem;
+  height: 100vh;
+
+  background-color: var(--color-primary);
+  color: var(--color-secondary);
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  padding: var(--spacing-lg) var(--spacing-md);
+  border-right: 4px solid var(--color-dark);
+}
+
+/* LOGO */
+.sidebar__logo {
+  margin-bottom: var(--spacing-xl);
+}
+
+.sidebar__logo h2 {
+  font-size: 2rem;
+  font-weight: 700;
+}
+
+/* MENU */
+.sidebar__menu {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+/* ITEM como <a> */
+.sidebar__item {
+  display: block; /* importante para <a> */
+
+  background-color: var(--color-secondary);
+  color: var(--color-dark);
+
+  padding: 1rem;
+  text-align: center;
+
+  border-radius: var(--radius-md);
+  border: 2px solid var(--color-dark);
+
+  font-weight: 600;
+  text-decoration: none;
+
+  transition: all 0.2s ease;
+}
+
+/* Hover */
+.sidebar__item:hover {
+  background-color: var(--color-accent);
+  color: #fff;
+}
+
+/* Activo */
+.sidebar__item--active {
+  background-color: var(--color-danger);
+  color: #fff;
+}
