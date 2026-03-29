@@ -1,0 +1,735 @@
+/* ============================================================
+   reservas.css  –  Pantalla de Reservas | Hotel Nicosan
+   Metodología: BEM  (Block__Element--Modifier)
+   ============================================================ */
+
+:root {
+  --color-primary: #335c67;
+  --color-secondary: #fff3b0;
+  --color-accent: #e09f3e;
+  --color-danger: #9e2a2b;
+  --color-dark: #540b0e;
+  --color-bg: #ffffff;
+  --color-text: #1a1a1a;
+  --color-border: #e0e0e0;
+  --font-primary: 'Montserrat', sans-serif;
+  --spacing-xs: 0.4rem;
+  --spacing-sm: 0.8rem;
+  --spacing-md: 1.6rem;
+  --spacing-lg: 2.4rem;
+  --spacing-xl: 3.2rem;
+  --radius-sm: 0.4rem;
+  --radius-md: 0.8rem;
+  --radius-lg: 1.6rem;
+
+  --reservations-shadow-card: 0 2px 12px rgba(0, 0, 0, 0.07);
+  --reservations-transition: 0.2s ease;
+}
+
+/* ============================================================
+   BLOCK: reservations
+   ============================================================ */
+.reservations {
+  margin-left: 24rem;
+  padding: var(--spacing-xl) var(--spacing-lg);
+  animation: fadeUp 0.4s ease both;
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(1.2rem); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── ELEMENT: header ── */
+.reservations__header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--spacing-md);
+  margin-bottom: var(--spacing-lg);
+  flex-wrap: wrap;
+}
+
+.reservations__title-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+}
+
+.reservations__title {
+  font-size: 2.8rem;
+  font-weight: 700;
+  color: var(--color-primary);
+  line-height: 1.2;
+  letter-spacing: -0.04rem;
+}
+
+.reservations__subtitle {
+  font-size: 1.4rem;
+  color: #6b7280;
+  font-weight: 400;
+}
+
+/* ── ELEMENT: add button ── */
+.reservations__add-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  background-color: var(--color-primary);
+  color: #ffffff;
+  font-family: var(--font-primary);
+  font-size: 1.4rem;
+  font-weight: 600;
+  padding: 1rem var(--spacing-md);
+  border-radius: var(--radius-md);
+  border: none;
+  cursor: pointer;
+  transition: background-color var(--reservations-transition),
+              transform var(--reservations-transition),
+              box-shadow var(--reservations-transition);
+  white-space: nowrap;
+}
+
+.reservations__add-btn:hover {
+  background-color: #274d56;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 14px rgba(51, 92, 103, 0.3);
+}
+
+.reservations__add-btn:active { transform: translateY(0); }
+
+.reservations__add-btn-icon {
+  font-size: 2rem;
+  line-height: 1;
+  font-weight: 400;
+}
+
+/* ── ELEMENT: filters ── */
+.reservations__filters {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  margin-bottom: var(--spacing-md);
+  flex-wrap: wrap;
+}
+
+.reservations__filter-btn {
+  font-family: var(--font-primary);
+  font-size: 1.4rem;
+  font-weight: 500;
+  color: #6b7280;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0.8rem var(--spacing-md);
+  border-radius: var(--radius-md);
+  transition: color var(--reservations-transition),
+              background-color var(--reservations-transition);
+}
+
+.reservations__filter-btn:hover {
+  color: var(--color-primary);
+  background-color: #f0f5f6;
+}
+
+/* MODIFIER: active */
+.reservations__filter-btn--active {
+  color: var(--color-primary);
+  background-color: #dceef1;
+  font-weight: 600;
+}
+
+/* ── ELEMENT: search ── */
+.reservations__search {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  background-color: #f9fafb;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: 0.8rem 1.2rem;
+  margin-left: auto;
+  transition: border-color var(--reservations-transition),
+              box-shadow var(--reservations-transition);
+}
+
+.reservations__search:focus-within {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(51, 92, 103, 0.1);
+}
+
+.reservations__search-icon {
+  width: 1.6rem;
+  height: 1.6rem;
+  color: #9ca3af;
+  flex-shrink: 0;
+}
+
+.reservations__search-input {
+  border: none;
+  background: none;
+  font-family: var(--font-primary);
+  font-size: 1.4rem;
+  color: var(--color-text);
+  outline: none;
+  width: 24rem;
+}
+
+.reservations__search-input::placeholder { color: #9ca3af; }
+
+/* ── ELEMENT: table wrapper ── */
+.reservations__table-wrapper {
+  background-color: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: var(--reservations-shadow-card);
+}
+
+/* ── ELEMENT: table ── */
+.reservations__table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.reservations__table-head {
+  background-color: #f8fafc;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.reservations__table-th {
+  padding: 1.4rem var(--spacing-md);
+  text-align: left;
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #6b7280;
+  text-transform: uppercase;
+  letter-spacing: 0.06rem;
+  white-space: nowrap;
+}
+
+.reservations__table-th--actions { text-align: center; }
+
+.reservations__table-row {
+  border-bottom: 1px solid var(--color-border);
+  transition: background-color var(--reservations-transition);
+}
+
+.reservations__table-row:last-child { border-bottom: none; }
+.reservations__table-row:hover { background-color: #f8fafc; }
+
+.reservations__table-td {
+  padding: 1.6rem var(--spacing-md);
+  font-size: 1.4rem;
+  color: var(--color-text);
+  vertical-align: middle;
+}
+
+/* MODIFIER: price */
+.reservations__table-td--price {
+  font-weight: 700;
+  color: var(--color-primary);
+}
+
+/* MODIFIER: actions */
+.reservations__table-td--actions {
+  text-align: center;
+  white-space: nowrap;
+}
+
+/* ── ELEMENT: guest info ── */
+.reservations__guest-info {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
+/* ── ELEMENT: avatar ── */
+.reservations__avatar {
+  width: 3.6rem;
+  height: 3.6rem;
+  border-radius: 50%;
+  background-color: var(--avatar-color, var(--color-primary));
+  color: #ffffff;
+  font-size: 1.2rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.reservations__guest-name {
+  font-size: 1.4rem;
+  font-weight: 600;
+}
+
+/* ── ELEMENT: badge ── */
+.reservations__badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.4rem 1rem;
+  border-radius: 10rem;
+  font-size: 1.2rem;
+  font-weight: 600;
+}
+
+.reservations__badge--active    { background-color: #dcfce7; color: #166534; }
+.reservations__badge--finished  { background-color: #e0f2fe; color: #075985; }
+.reservations__badge--pending   { background-color: #fef9c3; color: #854d0e; }
+.reservations__badge--cancelled { background-color: #fee2e2; color: #991b1b; }
+
+/* ── ELEMENT: action buttons ── */
+.reservations__action-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 3.2rem;
+  height: 3.2rem;
+  border-radius: var(--radius-sm);
+  border: none;
+  cursor: pointer;
+  margin: 0 0.2rem;
+  transition: background-color var(--reservations-transition),
+              transform var(--reservations-transition);
+}
+
+.reservations__action-btn svg {
+  width: 1.6rem;
+  height: 1.6rem;
+}
+
+.reservations__action-btn:hover { transform: scale(1.1); }
+
+.reservations__action-btn--view   { background-color: #f3f4f6; color: #374151; }
+.reservations__action-btn--view:hover { background-color: #e5e7eb; }
+
+.reservations__action-btn--edit   { background-color: #e0f2fe; color: #0369a1; }
+.reservations__action-btn--edit:hover { background-color: #bae6fd; }
+
+.reservations__action-btn--delete { background-color: #fee2e2; color: var(--color-danger); }
+.reservations__action-btn--delete:hover { background-color: #fecaca; }
+
+/* ── ELEMENT: pagination ── */
+.reservations__pagination {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: var(--spacing-lg);
+  flex-wrap: wrap;
+  gap: var(--spacing-md);
+}
+
+.reservations__pagination-info {
+  font-size: 1.4rem;
+  color: #6b7280;
+}
+
+.reservations__pagination-controls {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+}
+
+.reservations__page-btn {
+  width: 3.6rem;
+  height: 3.6rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-border);
+  background-color: var(--color-bg);
+  font-family: var(--font-primary);
+  font-size: 1.4rem;
+  font-weight: 500;
+  color: #374151;
+  cursor: pointer;
+  transition: all var(--reservations-transition);
+}
+
+.reservations__page-btn:hover:not(:disabled) {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+  background-color: #f0f5f6;
+}
+
+.reservations__page-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+/* MODIFIER: active page */
+.reservations__page-btn--active {
+  background-color: var(--color-primary);
+  border-color: var(--color-primary);
+  color: #ffffff;
+  font-weight: 700;
+}
+
+.reservations__page-btn--active:hover {
+  background-color: #274d56 !important;
+  border-color: #274d56 !important;
+  color: #ffffff !important;
+}
+
+/* ============================================================
+   BLOCK: modal-overlay
+   ============================================================ */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.45);
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-md);
+  backdrop-filter: blur(3px);
+  animation: overlayIn 0.2s ease both;
+}
+
+.modal-overlay.hidden {
+  display: none;
+}
+
+@keyframes overlayIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+/* ============================================================
+   BLOCK: modal
+   ============================================================ */
+.modal {
+  background-color: var(--color-bg);
+  border-radius: var(--radius-lg);
+  width: 100%;
+  max-width: 62rem;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+  animation: modalIn 0.25s ease both;
+  display: flex;
+  flex-direction: column;
+}
+
+@keyframes modalIn {
+  from { opacity: 0; transform: translateY(2rem) scale(0.97); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* ── ELEMENT: modal header ── */
+.modal__header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  padding: var(--spacing-lg) var(--spacing-lg) var(--spacing-md);
+  border-bottom: 1px solid var(--color-border);
+  gap: var(--spacing-md);
+  position: sticky;
+  top: 0;
+  background: var(--color-bg);
+  z-index: 1;
+}
+
+.modal__label {
+  font-size: 1.2rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08rem;
+  color: #9ca3af;
+  margin-bottom: 0.4rem;
+}
+
+.modal__title {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--color-primary);
+}
+
+.modal__close {
+  width: 3.2rem;
+  height: 3.2rem;
+  border-radius: var(--radius-md);
+  background-color: #f3f4f6;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  color: #374151;
+  transition: background-color var(--reservations-transition);
+}
+
+.modal__close:hover { background-color: #e5e7eb; }
+
+.modal__close svg {
+  width: 1.6rem;
+  height: 1.6rem;
+}
+
+/* ── ELEMENT: status row ── */
+.modal__status-row {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  padding: var(--spacing-md) var(--spacing-lg);
+  background-color: #f8fafc;
+  border-bottom: 1px solid var(--color-border);
+  flex-wrap: wrap;
+}
+
+.modal__status-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.5rem 1.2rem;
+  border-radius: 10rem;
+  font-size: 1.3rem;
+  font-weight: 700;
+}
+
+.modal__status-badge--active    { background-color: #dcfce7; color: #166534; }
+.modal__status-badge--finished  { background-color: #e0f2fe; color: #075985; }
+.modal__status-badge--pending   { background-color: #fef9c3; color: #854d0e; }
+.modal__status-badge--cancelled { background-color: #fee2e2; color: #991b1b; }
+
+.modal__id-text {
+  font-size: 1.2rem;
+  color: #9ca3af;
+}
+
+.modal__id-text code {
+  font-family: 'Courier New', monospace;
+  font-size: 1.1rem;
+  background-color: #f3f4f6;
+  padding: 0.2rem 0.6rem;
+  border-radius: var(--radius-sm);
+  color: #374151;
+}
+
+/* ── ELEMENT: body ── */
+.modal__body {
+  padding: var(--spacing-md) var(--spacing-lg);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+/* ── ELEMENT: section ── */
+.modal__section {
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+
+.modal__section-title {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--color-primary);
+  text-transform: uppercase;
+  letter-spacing: 0.06rem;
+  padding: 1rem var(--spacing-md);
+  background-color: #f0f5f6;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.modal__section-title svg {
+  width: 1.6rem;
+  height: 1.6rem;
+  flex-shrink: 0;
+}
+
+/* ── ELEMENT: info grid ── */
+.modal__info-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(18rem, 1fr));
+  gap: 0;
+}
+
+.modal__info-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  padding: 1.2rem var(--spacing-md);
+  border-right: 1px solid var(--color-border);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.modal__info-item:last-child { border-right: none; }
+
+.modal__info-label {
+  font-size: 1.1rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05rem;
+  color: #9ca3af;
+}
+
+.modal__info-value {
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+/* ── ELEMENT: guest list ── */
+.modal__guest-list {
+  padding: var(--spacing-md);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+}
+
+.modal__guest-item {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  font-size: 1.4rem;
+  font-weight: 500;
+  color: var(--color-text);
+}
+
+.modal__guest-dot {
+  width: 2.4rem;
+  height: 2.4rem;
+  border-radius: 50%;
+  background-color: #dceef1;
+  color: var(--color-primary);
+  font-size: 1.1rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.modal__titular-tag {
+  font-style: normal;
+  font-size: 1.1rem;
+  font-weight: 600;
+  background-color: var(--color-secondary);
+  color: var(--color-dark);
+  padding: 0.1rem 0.6rem;
+  border-radius: var(--radius-sm);
+  margin-left: 0.4rem;
+}
+
+/* ── ELEMENT: finance grid ── */
+.modal__finance-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0;
+}
+
+.modal__finance-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  padding: var(--spacing-md);
+  border-right: 1px solid var(--color-border);
+}
+
+.modal__finance-card:last-child { border-right: none; }
+
+.modal__finance-label {
+  font-size: 1.2rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05rem;
+  color: #9ca3af;
+}
+
+.modal__finance-value {
+  font-size: 2.4rem;
+  font-weight: 700;
+}
+
+.modal__finance-value--total { color: var(--color-primary); }
+.modal__finance-value--mora  { color: #6b7280; }
+
+/* MODIFIER: mora activa (hay deuda) */
+.modal__finance-card--mora-active .modal__finance-value--mora {
+  color: var(--color-danger);
+}
+
+.modal__finance-card--mora-active .modal__finance-label::after {
+  content: ' ⚠';
+}
+
+/* ── ELEMENT: footer ── */
+.modal__footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-md) var(--spacing-lg);
+  border-top: 1px solid var(--color-border);
+  background-color: #f8fafc;
+  position: sticky;
+  bottom: 0;
+}
+
+.modal__btn {
+  font-family: var(--font-primary);
+  font-size: 1.4rem;
+  font-weight: 600;
+  padding: 0.9rem var(--spacing-lg);
+  border-radius: var(--radius-md);
+  border: none;
+  cursor: pointer;
+  transition: all var(--reservations-transition);
+}
+
+/* MODIFIER: secondary */
+.modal__btn--secondary {
+  background-color: #f3f4f6;
+  color: #374151;
+}
+
+.modal__btn--secondary:hover { background-color: #e5e7eb; }
+
+/* MODIFIER: primary */
+.modal__btn--primary {
+  background-color: var(--color-primary);
+  color: #ffffff;
+}
+
+.modal__btn--primary:hover {
+  background-color: #274d56;
+  box-shadow: 0 4px 14px rgba(51, 92, 103, 0.3);
+}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media (max-width: 768px) {
+  .reservations {
+    margin-left: 0;
+  }
+
+  .reservations__title { font-size: 2.2rem; }
+  .reservations__search-input { width: 16rem; }
+
+  /* Ocultar precio total en tablet */
+  .reservations__table th:nth-child(5),
+  .reservations__table td:nth-child(5) { display: none; }
+
+  .modal__finance-grid { grid-template-columns: 1fr; }
+  .modal__finance-card { border-right: none; border-bottom: 1px solid var(--color-border); }
+}
+
+@media (max-width: 480px) {
+  .reservations__filters { flex-direction: column; align-items: flex-start; }
+  .reservations__search { margin-left: 0; width: 100%; }
+  .reservations__search-input { width: 100%; }
+
+  /* Ocultar fechas en móvil pequeño */
+  .reservations__table th:nth-child(3),
+  .reservations__table td:nth-child(3),
+  .reservations__table th:nth-child(4),
+  .reservations__table td:nth-child(4) { display: none; }
+
+  .modal { max-height: 95vh; }
+  .modal__info-grid { grid-template-columns: 1fr; }
+  .modal__info-item { border-right: none; }
+}
