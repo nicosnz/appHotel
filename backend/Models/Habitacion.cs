@@ -15,6 +15,6 @@ namespace backend.Models
         public TipoCama TipoCama { get; set; }
         public int Piso { get; set; }
         public EstadoHabitacion EstadoHabitacion { get; set; }
-        public List<Reserva> Reservas { get; set; } 
+        public List<Reserva> Reservas { get; set; } = new();
     }
 }
