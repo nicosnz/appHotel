@@ -9,6 +9,7 @@ namespace backend.Models
     {
         public Guid Id { get; set; }
         public List<Huesped> Huespedes { get; set; }
+        public Guid HabitacionId {get;set;}
         public Habitacion Habitacion { get; set; }
         public EstadoReserva EstadoReserva { get; set; }
         public decimal Mora { get; set; }

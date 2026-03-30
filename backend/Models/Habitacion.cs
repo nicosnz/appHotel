@@ -11,10 +11,10 @@ namespace backend.Models
         public TipoHabitacion TipoHabitacion { get; set; }
         public string NumHabitacion { get; set; }
         public int CapacidadPersonas { get; set; }
-        public List<string> Amenidades { get; set; }
         public decimal Precio { get; set; }
         public TipoCama TipoCama { get; set; }
         public int Piso { get; set; }
         public EstadoHabitacion EstadoHabitacion { get; set; }
+        public List<Reserva> Reservas { get; set; } 
     }
 }

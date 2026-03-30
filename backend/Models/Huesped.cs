@@ -12,5 +12,6 @@ namespace backend.Models
         public string Apellido { get; set; }
         public string Documento { get; set; }
         public string Genero { get; set; }
+        public List<Reserva> Reservas {get;set;}
     }
 }
