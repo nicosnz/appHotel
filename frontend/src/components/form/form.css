@@ -1,0 +1,314 @@
+/* ============================================================
+   guest-modal.css  –  Modal Agregar Huésped | Hotel Nicosan
+   Metodología: BEM  (Block__Element--Modifier)
+   ============================================================ */
+
+/* ============================================================
+   BLOCK: modal-overlay
+   ============================================================ */
+.guest-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.45);
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-md);
+  backdrop-filter: blur(3px);
+  animation: overlayIn 0.2s ease both;
+}
+
+.guest-modal-overlay.hidden {
+  display: none;
+}
+
+@keyframes overlayIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+/* ============================================================
+   BLOCK: guest-modal
+   ============================================================ */
+.guest-modal {
+  background-color: var(--color-bg);
+  border-radius: var(--radius-lg);
+  width: 100%;
+  max-width: 56rem;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+  animation: modalIn 0.25s ease both;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+@keyframes modalIn {
+  from { opacity: 0; transform: translateY(2rem) scale(0.97); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* ── ELEMENT: header ── */
+.guest-modal__header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--spacing-md);
+  padding: var(--spacing-lg);
+  border-bottom: 1px solid var(--color-border);
+  background-color: #f8fafc;
+}
+
+.guest-modal__label {
+  font-size: 1.2rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08rem;
+  color: #9ca3af;
+  margin-bottom: 0.4rem;
+}
+
+.guest-modal__title {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--color-primary);
+}
+
+.guest-modal__close {
+  width: 3.2rem;
+  height: 3.2rem;
+  border-radius: var(--radius-md);
+  background-color: #f3f4f6;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  color: #374151;
+  transition: background-color 0.2s ease;
+}
+
+.guest-modal__close:hover { background-color: #e5e7eb; }
+.guest-modal__close svg   { width: 1.6rem; height: 1.6rem; }
+
+/* ── ELEMENT: toast de éxito ── */
+.guest-modal__toast {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  padding: 1.2rem var(--spacing-lg);
+  font-size: 1.4rem;
+  font-weight: 600;
+  animation: slideDown 0.3s ease both;
+}
+
+.guest-modal__toast--success {
+  background-color: #dcfce7;
+  color: #166534;
+  border-bottom: 1px solid #bbf7d0;
+}
+
+.guest-modal__toast svg {
+  width: 1.8rem;
+  height: 1.8rem;
+  flex-shrink: 0;
+}
+
+.guest-modal__toast.hidden { display: none; }
+
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── ELEMENT: form ── */
+.guest-modal__form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+  padding: var(--spacing-lg);
+}
+
+/* ── ELEMENT: row (dos columnas) ── */
+.guest-modal__row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--spacing-md);
+}
+
+/* ── ELEMENT: field (wrapper de cada campo) ── */
+.guest-modal__field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+/* ── ELEMENT: label del campo ── */
+.guest-modal__label-field {
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: #374151;
+}
+
+.guest-modal__required {
+  color: var(--color-danger);
+  margin-left: 0.2rem;
+}
+
+/* ── ELEMENT: input ── */
+.guest-modal__input {
+  width: 100%;
+  padding: 1rem 1.2rem;
+  font-family: var(--font-primary);
+  font-size: 1.4rem;
+  color: var(--color-text);
+  background-color: #f9fafb;
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-md);
+  outline: none;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+  appearance: none;
+  -webkit-appearance: none;
+}
+
+.guest-modal__input:focus {
+  border-color: var(--color-primary);
+  background-color: #ffffff;
+  box-shadow: 0 0 0 3px rgba(51, 92, 103, 0.1);
+}
+
+.guest-modal__input::placeholder { color: #9ca3af; }
+
+/* MODIFIER: error */
+.guest-modal__input--error {
+  border-color: var(--color-danger) !important;
+  background-color: #fff8f8;
+  box-shadow: 0 0 0 3px rgba(158, 42, 43, 0.08) !important;
+}
+
+/* ── ELEMENT: select wrapper (para el chevron custom) ── */
+.guest-modal__select-wrapper {
+  position: relative;
+}
+
+.guest-modal__select {
+  cursor: pointer;
+  padding-right: 3.6rem; /* espacio para el icono */
+}
+
+.guest-modal__select-icon {
+  position: absolute;
+  right: 1.2rem;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 1.6rem;
+  height: 1.6rem;
+  color: #9ca3af;
+  pointer-events: none;
+}
+
+/* ── ELEMENT: error message ── */
+.guest-modal__error {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: var(--color-danger);
+  animation: errorIn 0.2s ease both;
+}
+
+.guest-modal__error svg {
+  width: 1.4rem;
+  height: 1.4rem;
+  flex-shrink: 0;
+}
+
+.guest-modal__error.hidden { display: none; }
+
+@keyframes errorIn {
+  from { opacity: 0; transform: translateY(-4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* MODIFIER: campo con error (shake sutil) */
+.guest-modal__field--error .guest-modal__input {
+  animation: shake 0.3s ease;
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25%       { transform: translateX(-4px); }
+  75%       { transform: translateX(4px); }
+}
+
+/* ── ELEMENT: footer ── */
+.guest-modal__footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-md) var(--spacing-lg);
+  border-top: 1px solid var(--color-border);
+  background-color: #f8fafc;
+}
+
+/* ── ELEMENT: buttons ── */
+.guest-modal__btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  font-family: var(--font-primary);
+  font-size: 1.4rem;
+  font-weight: 600;
+  padding: 1rem var(--spacing-lg);
+  border-radius: var(--radius-md);
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.guest-modal__btn svg {
+  width: 1.6rem;
+  height: 1.6rem;
+}
+
+/* MODIFIER: secondary */
+.guest-modal__btn--secondary {
+  background-color: #f3f4f6;
+  color: #374151;
+}
+
+.guest-modal__btn--secondary:hover { background-color: #e5e7eb; }
+
+/* MODIFIER: primary */
+.guest-modal__btn--primary {
+  background-color: var(--color-primary);
+  color: #ffffff;
+}
+
+.guest-modal__btn--primary:hover {
+  background-color: #274d56;
+  box-shadow: 0 4px 14px rgba(51, 92, 103, 0.3);
+  transform: translateY(-1px);
+}
+
+.guest-modal__btn--primary:active { transform: translateY(0); }
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media (max-width: 540px) {
+  .guest-modal__row {
+    grid-template-columns: 1fr;
+  }
+
+  .guest-modal__footer {
+    flex-direction: column-reverse;
+  }
+
+  .guest-modal__btn {
+    width: 100%;
+    justify-content: center;
+  }
+}

@@ -1,196 +1,303 @@
-export class Huespedes extends HTMLElement{
-    constructor(){
-        super();
+import type { HuespedForm } from './../components/huespedes/HuespedRequets';
+import { createHuesped, getHuespedes } from "../services/Huespedes/HuespedesRepository";
+import type { HuespedResponse } from '../services/Huespedes/HuespedResponse';
+
+const AVATAR_COLORS = ['#335c67', '#e09f3e', '#9e2a2b', '#540b0e', '#10b981', '#6366f1', '#4338ca', '#db2777'];
+
+export class Huespedes extends HTMLElement {
+  private guests: HuespedResponse[] = [];
+
+  constructor() {
+    super();
+  }
+
+  async connectedCallback() {
+    this.render();
+    this.initEvents();
+    await this.loadGuests();
+  }
+
+  private async loadGuests(): Promise<void> {
+    const tbody = this.querySelector('#guestsTableBody');
+    if (!tbody) return;
+
+    try {
+      tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; padding: 2rem;">Cargando huéspedes...</td></tr>`;
+      this.guests = await getHuespedes();
+      this.renderTable(this.guests);
+    } catch (error) {
+      console.error(error);
+      tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; color: red; padding: 2rem;">Error al conectar con el servidor.</td></tr>`;
+    }
+  }
+
+  private renderTable(data: HuespedResponse[]): void {
+    const tbody = this.querySelector('#guestsTableBody');
+    const info = this.querySelector('#guestsPaginationInfo');
+    if (!tbody) return;
+
+    if (data.length === 0) {
+      tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; padding: 2rem;">No se encontraron resultados.</td></tr>`;
+      if (info) info.textContent = "Mostrando 0 huéspedes";
+      return;
+    }
+
+    tbody.innerHTML = data.map(h => this.createRowHTML(h)).join('');
+    if (info) info.textContent = `Mostrando ${data.length} de ${this.guests.length} huéspedes`;
+  }
+
+  private createRowHTML(h: HuespedResponse): string {
+    const initials = `${h.nombre[0]}${h.apellido[0]}`.toUpperCase();
+    const randomColor = AVATAR_COLORS[Math.floor(Math.random() * AVATAR_COLORS.length)];
+    
+    const ultimaReserva = h.reservas && h.reservas.length > 0 ? h.reservas[0] : null;
+    const checkIn = ultimaReserva ? new Date(ultimaReserva.fechaCheckInEsperado).toLocaleDateString() : '—';
+    const checkOut = ultimaReserva ? new Date(ultimaReserva.fechaCheckOutEsperado).toLocaleDateString() : '—';
+    
+    const statusClass = h.activo ? 'guests__badge--active' : 'guests__badge--inactive';
+
+    return `
+      <tr class="guests__table-row" data-id="${h.id}">
+        <td class="guests__table-td">
+          <div class="guests__guest-info">
+            <div class="guests__avatar" style="--avatar-color:${randomColor};">${initials}</div>
+            <div>
+              <p class="guests__guest-name">${h.nombre} ${h.apellido}</p>
+              <p class="guests__guest-email">${h.genero}</p>
+            </div>
+          </div>
+        </td>
+        <td class="guests__table-td">
+            <span style="font-weight: 600; color: #1e293b;">${h.documento}</span>
+        </td>
+        <td class="guests__table-td">${checkIn}</td>
+        <td class="guests__table-td">${checkOut}</td>
+        <td class="guests__table-td"><span class="guests__badge ${statusClass}">${h.activo ? 'Activo' : 'Inactivo'}</span></td>
+        <td class="guests__table-td guests__table-td--actions">
+          <button class="guests__action-btn guests__action-btn--edit" title="Editar">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+          </button>
+          <button class="guests__action-btn guests__action-btn--delete" title="Eliminar" data-id="${h.id}">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
+          </button>
+        </td>
+      </tr>
+    `;
+  }
+
+  private initEvents(): void {
+    this.querySelector('#openGuestModal')?.addEventListener('click', () => this.openModal());
+    this.querySelector('#closeGuestModal')?.addEventListener('click', () => this.closeModal());
+    this.querySelector('#cancelGuestModal')?.addEventListener('click', () => this.closeModal());
+    this.querySelector('#saveGuestBtn')?.addEventListener('click', () => this.handleSave());
+
+    // Validaciones en tiempo real (limpiar error al escribir)
+    ['nombre', 'apellido', 'documento', 'genero'].forEach(field => {
+      const input = this.querySelector(`#guest${field.charAt(0).toUpperCase() + field.slice(1)}`);
+      input?.addEventListener('input', () => this.clearFieldError(field));
+    });
+
+    // Buscador
+    this.querySelector('.guests__search-input')?.addEventListener('input', (e) => {
+      const term = (e.target as HTMLInputElement).value.toLowerCase();
+      const filtered = this.guests.filter(g => 
+        g.nombre.toLowerCase().includes(term) || g.documento.includes(term)
+      );
+      this.renderTable(filtered);
+    });
+
+    // Delegación para eliminar
+    this.querySelector('#guestsTableBody')?.addEventListener('click', (e) => {
+        const btn = (e.target as HTMLElement).closest('.guests__action-btn--delete');
+        if (btn) {
+            const id = btn.getAttribute('data-id');
+            if (confirm('¿Eliminar huésped?')) {
+                this.guests = this.guests.filter(g => g.id !== id);
+                this.renderTable(this.guests);
+            }
+        }
+    });
+  }
+
+  private async handleSave(): Promise<void> {
+    if (!this.validate()) return;
+    const saveBtn = this.querySelector('#saveGuestBtn') as HTMLButtonElement;
+
+    const data: HuespedForm = {
+      nombre: (this.querySelector('#guestNombre') as HTMLInputElement).value.trim(),
+      apellido: (this.querySelector('#guestApellido') as HTMLInputElement).value.trim(),
+      documento: (this.querySelector('#guestDocumento') as HTMLInputElement).value.trim(),
+      genero: (this.querySelector('#guestGenero') as HTMLSelectElement).value,
     };
 
-    connectedCallback(){
-        this.innerHTML = `
-          <main class="container">
- 
-                <!-- ===== CABECERA DE SECCIÓN ===== -->
-                <section class="guests">
-            
-                <div class="guests__header">
-                    <div class="guests__title-group">
-                    <h1 class="guests__title">Lista de huéspedes</h1>
-                    <p class="guests__subtitle">Gestiona el registro de todos los huéspedes del hotel</p>
-                    </div>
-            
-                    <button class="guests__add-btn" aria-label="Agregar huésped">
-                    <span class="guests__add-btn-icon">+</span>
-                    <span>Nuevo huésped</span>
-                    </button>
-                </div>
-            
-                <!-- ===== FILTROS ===== -->
-                <div class="guests__filters">
-                    <button class="guests__filter-btn guests__filter-btn--active" data-filter="todos">
-                    Todos los huéspedes
-                    </button>
-                    <button class="guests__filter-btn" data-filter="activos">
-                    Activos
-                    </button>
-                    <button class="guests__filter-btn" data-filter="inactivos">
-                    Inactivos
-                    </button>
-            
-                    <div class="guests__search">
-                    <svg class="guests__search-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
-                    </svg>
-                    <input
-                        class="guests__search-input"
-                        type="text"
-                        placeholder="Buscar huésped..."
-                        aria-label="Buscar huésped"
-                    />
-                    </div>
-                </div>
-            
-                <!-- ===== TABLA ===== -->
-                <div class="guests__table-wrapper">
-                    <table class="guests__table">
-                    <thead class="guests__table-head">
-                        <tr>
-                        <th class="guests__table-th">Huésped</th>
-                        <th class="guests__table-th">Habitación</th>
-                        <th class="guests__table-th">Fecha Entrada</th>
-                        <th class="guests__table-th">Fecha Salida</th>
-                        <th class="guests__table-th">Estado</th>
-                        <th class="guests__table-th guests__table-th--actions">Acciones</th>
-                        </tr>
-                    </thead>
-                    <tbody class="guests__table-body">
-            
-                        <!-- Fila 1 -->
-                        <tr class="guests__table-row">
-                        <td class="guests__table-td">
-                            <div class="guests__guest-info">
-                            <div class="guests__avatar" style="--avatar-color: #335c67;">JM</div>
-                            <div>
-                                <p class="guests__guest-name">Juan Martínez</p>
-                                <p class="guests__guest-email">juan@email.com</p>
-                            </div>
-                            </div>
-                        </td>
-                        <td class="guests__table-td">101</td>
-                        <td class="guests__table-td">12 Jun 2025</td>
-                        <td class="guests__table-td">18 Jun 2025</td>
-                        <td class="guests__table-td">
-                            <span class="guests__badge guests__badge--active">Activo</span>
-                        </td>
-                        <td class="guests__table-td guests__table-td--actions">
-                            <button class="guests__action-btn guests__action-btn--edit" aria-label="Editar">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
-                            </button>
-                            <button class="guests__action-btn guests__action-btn--delete" aria-label="Eliminar">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
-                            </button>
-                        </td>
-                        </tr>
-            
-                        <!-- Fila 2 -->
-                        <tr class="guests__table-row">
-                        <td class="guests__table-td">
-                            <div class="guests__guest-info">
-                            <div class="guests__avatar" style="--avatar-color: #e09f3e;">AL</div>
-                            <div>
-                                <p class="guests__guest-name">Ana López</p>
-                                <p class="guests__guest-email">ana@email.com</p>
-                            </div>
-                            </div>
-                        </td>
-                        <td class="guests__table-td">205</td>
-                        <td class="guests__table-td">10 Jun 2025</td>
-                        <td class="guests__table-td">15 Jun 2025</td>
-                        <td class="guests__table-td">
-                            <span class="guests__badge guests__badge--inactive">Inactivo</span>
-                        </td>
-                        <td class="guests__table-td guests__table-td--actions">
-                            <button class="guests__action-btn guests__action-btn--edit" aria-label="Editar">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
-                            </button>
-                            <button class="guests__action-btn guests__action-btn--delete" aria-label="Eliminar">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
-                            </button>
-                        </td>
-                        </tr>
-            
-                        <!-- Fila 3 -->
-                        <tr class="guests__table-row">
-                        <td class="guests__table-td">
-                            <div class="guests__guest-info">
-                            <div class="guests__avatar" style="--avatar-color: #9e2a2b;">CR</div>
-                            <div>
-                                <p class="guests__guest-name">Carlos Ruiz</p>
-                                <p class="guests__guest-email">carlos@email.com</p>
-                            </div>
-                            </div>
-                        </td>
-                        <td class="guests__table-td">312</td>
-                        <td class="guests__table-td">14 Jun 2025</td>
-                        <td class="guests__table-td">20 Jun 2025</td>
-                        <td class="guests__table-td">
-                            <span class="guests__badge guests__badge--active">Activo</span>
-                        </td>
-                        <td class="guests__table-td guests__table-td--actions">
-                            <button class="guests__action-btn guests__action-btn--edit" aria-label="Editar">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
-                            </button>
-                            <button class="guests__action-btn guests__action-btn--delete" aria-label="Eliminar">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
-                            </button>
-                        </td>
-                        </tr>
-            
-                        <!-- Fila 4 -->
-                        <tr class="guests__table-row">
-                        <td class="guests__table-td">
-                            <div class="guests__guest-info">
-                            <div class="guests__avatar" style="--avatar-color: #540b0e;">MG</div>
-                            <div>
-                                <p class="guests__guest-name">María García</p>
-                                <p class="guests__guest-email">maria@email.com</p>
-                            </div>
-                            </div>
-                        </td>
-                        <td class="guests__table-td">118</td>
-                        <td class="guests__table-td">08 Jun 2025</td>
-                        <td class="guests__table-td">13 Jun 2025</td>
-                        <td class="guests__table-td">
-                            <span class="guests__badge guests__badge--inactive">Inactivo</span>
-                        </td>
-                        <td class="guests__table-td guests__table-td--actions">
-                            <button class="guests__action-btn guests__action-btn--edit" aria-label="Editar">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
-                            </button>
-                            <button class="guests__action-btn guests__action-btn--delete" aria-label="Eliminar">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
-                            </button>
-                        </td>
-                        </tr>
-            
-                    </tbody>
-                    </table>
-                </div>
-            
-                <!-- ===== PAGINACIÓN ===== -->
-                <div class="guests__pagination">
-                    <p class="guests__pagination-info">Mostrando 1–4 de 24 huéspedes</p>
-                    <div class="guests__pagination-controls">
-                    <button class="guests__page-btn" disabled aria-label="Anterior">&#8592;</button>
-                    <button class="guests__page-btn guests__page-btn--active">1</button>
-                    <button class="guests__page-btn">2</button>
-                    <button class="guests__page-btn">3</button>
-                    <button class="guests__page-btn" aria-label="Siguiente">&#8594;</button>
-                    </div>
-                </div>
-            
-                </section>
-            </main>
-        
-        
-        `;
+    try {
+      saveBtn.disabled = true;
+      const newId = await createHuesped(data);
+
+      const nuevoHuesped: HuespedResponse = {
+        id: newId,
+        nombre: data.nombre,
+        apellido: data.apellido,
+        documento: data.documento,
+        genero: data.genero,
+        activo: true,
+        reservas: [] 
+      };
+      this.guests.unshift(nuevoHuesped as any);
+      this.renderTable(this.guests);
+      
+      this.querySelector('#successToast')?.classList.remove('hidden');
+      setTimeout(() => this.closeModal(), 1500);
+    } catch (error) {
+      alert('Error al registrar');
+    } finally {
+      saveBtn.disabled = false;
     }
-};
-customElements.define("app-huespedes",Huespedes);
+  }
+
+  private validate(): boolean {
+    const fields = ['nombre', 'apellido', 'documento', 'genero'];
+    let valid = true;
+    fields.forEach(f => {
+      const input = this.querySelector(`#guest${f.charAt(0).toUpperCase() + f.slice(1)}`) as HTMLInputElement;
+      if (!input.value.trim()) {
+        this.showFieldError(f);
+        valid = false;
+      } else {
+        this.clearFieldError(f);
+      }
+    });
+    return valid;
+  }
+
+  private showFieldError(field: string): void {
+    this.querySelector(`#field-${field}`)?.classList.add('guest-modal__field--error');
+    this.querySelector(`#error-${field}`)?.classList.remove('hidden');
+  }
+
+  private clearFieldError(field: string): void {
+    this.querySelector(`#field-${field}`)?.classList.remove('guest-modal__field--error');
+    this.querySelector(`#error-${field}`)?.classList.add('hidden');
+  }
+
+  private openModal(): void {
+    this.querySelector('#guestModalOverlay')?.classList.remove('hidden');
+    (this.querySelector('#guestNombre') as HTMLElement).focus();
+  }
+
+  private closeModal(): void {
+    this.querySelector('#guestModalOverlay')?.classList.add('hidden');
+    (this.querySelector('#guestForm') as HTMLFormElement).reset();
+    this.querySelector('#successToast')?.classList.add('hidden');
+  }
+
+  private render() {
+    this.innerHTML = `
+      <main class="container">
+        <section class="guests">
+          <div class="guests__header">
+            <div class="guests__title-group">
+              <h1 class="guests__title">Lista de huéspedes</h1>
+              <p class="guests__subtitle">Gestiona el registro de todos los huéspedes del hotel</p>
+            </div>
+            <button class="guests__add-btn" id="openGuestModal">
+              <span class="guests__add-btn-icon">+</span>
+              <span>Nuevo huésped</span>
+            </button>
+          </div>
+
+          <div class="guests__filters">
+            <button class="guests__filter-btn guests__filter-btn--active" data-filter="todos">Todos</button>
+            <button class="guests__filter-btn" data-filter="activos">Activos</button>
+            <div class="guests__search">
+              <input class="guests__search-input" type="text" placeholder="Buscar por nombre o documento..."/>
+            </div>
+          </div>
+
+          <div class="guests__table-wrapper">
+            <table class="guests__table">
+              <thead class="guests__table-head">
+                <tr>
+                  <th class="guests__table-th">Huésped</th>
+                  <th class="guests__table-th">Documento</th>
+                  <th class="guests__table-th">Fecha Entrada</th>
+                  <th class="guests__table-th">Fecha Salida</th>
+                  <th class="guests__table-th">Estado</th>
+                  <th class="guests__table-th">Acciones</th>
+                </tr>
+              </thead>
+              <tbody class="guests__table-body" id="guestsTableBody"></tbody>
+            </table>
+          </div>
+          <div class="guests__pagination">
+            <p class="guests__pagination-info" id="guestsPaginationInfo"></p>
+          </div>
+        </section>
+      </main>
+
+      <div class="guest-modal-overlay hidden" id="guestModalOverlay" role="dialog" aria-modal="true" aria-labelledby="guestModalTitle"> 
+         <div class="guest-modal"> 
+           <div class="guest-modal__header"> 
+             <div> 
+               <p class="guest-modal__label">Registro de huésped</p> 
+               <h2 class="guest-modal__title" id="guestModalTitle">Nuevo huésped</h2> 
+             </div> 
+             <button class="guest-modal__close" id="closeGuestModal"> 
+               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"> 
+                 <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/> 
+               </svg> 
+             </button> 
+           </div> 
+
+           <div class="guest-modal__toast guest-modal__toast--success hidden" id="successToast"> 
+             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"> 
+               <polyline points="20 6 9 17 4 12"/> 
+             </svg> 
+             <span>Huésped registrado correctamente.</span> 
+           </div> 
+
+           <form class="guest-modal__form" id="guestForm" novalidate> 
+             <div class="guest-modal__row"> 
+               <div class="guest-modal__field" id="field-nombre"> 
+                 <label class="guest-modal__label-field" for="guestNombre">Nombre *</label> 
+                 <input class="guest-modal__input" type="text" id="guestNombre" name="nombre" placeholder="Santiago"> 
+                 <p class="guest-modal__error hidden" id="error-nombre">El nombre es obligatorio.</p> 
+               </div> 
+               <div class="guest-modal__field" id="field-apellido"> 
+                 <label class="guest-modal__label-field" for="guestApellido">Apellido *</label> 
+                 <input class="guest-modal__input" type="text" id="guestApellido" name="apellido" placeholder="Sánchez"> 
+                 <p class="guest-modal__error hidden" id="error-apellido">El apellido es obligatorio.</p> 
+               </div> 
+             </div> 
+
+             <div class="guest-modal__row"> 
+               <div class="guest-modal__field" id="field-documento"> 
+                 <label class="guest-modal__label-field" for="guestDocumento">Documento *</label> 
+                 <input class="guest-modal__input" type="text" id="guestDocumento" name="documento" placeholder="1234567"> 
+                 <p class="guest-modal__error hidden" id="error-documento">El documento es obligatorio.</p> 
+               </div> 
+               <div class="guest-modal__field" id="field-genero"> 
+                 <label class="guest-modal__label-field" for="guestGenero">Género *</label> 
+                 <div class="guest-modal__select-wrapper"> 
+                   <select class="guest-modal__input guest-modal__select" id="guestGenero" name="genero"> 
+                     <option value="">Seleccionar género...</option> 
+                     <option value="Masculino">Masculino</option> 
+                     <option value="Femenino">Femenino</option> 
+                   </select> 
+                 </div> 
+                 <p class="guest-modal__error hidden" id="error-genero">El género es obligatorio.</p> 
+               </div> 
+             </div> 
+           </form> 
+
+           <div class="guest-modal__footer"> 
+             <button class="guest-modal__btn guest-modal__btn--secondary" id="cancelGuestModal">Cancelar</button> 
+             <button class="guest-modal__btn guest-modal__btn--primary" id="saveGuestBtn">Guardar huésped</button> 
+           </div> 
+         </div> 
+       </div> 
+    `;
+  }
+}
+
+customElements.define('app-huespedes', Huespedes);

@@ -4,21 +4,15 @@ export const Router = {
 
   init(){
     document.addEventListener("click", (e) => {
-        let link = ""
-        let elemento;
-        if(e.target){
-            elemento = e.target as HTMLAnchorElement;
-            link = elemento.className;
+        const target = e.target as HTMLElement;
 
-            
-        }
-      
-        if(link != "sidebar__item") return;
-        
+        const link = target.closest("a");
+
+        if (!link || !link.classList.contains("sidebar__item")) return;
+
         e.preventDefault();
 
-        if(!elemento) return;
-        const href = elemento.getAttribute("href");
+        const href = link.getAttribute("href");
         Router.go(href!);
 
     });

@@ -1,69 +1,184 @@
-/* =========================
-   HOME LAYOUT
-========================= */
+/* ============================================================
+   home.css  –  Dashboard de inicio | Hotel Nicosan
+   Metodología: BEM  (Block__Element--Modifier)
+   ============================================================ */
 
+:root {
+  --color-primary: #335c67;
+  --color-secondary: #fff3b0;
+  --color-accent: #e09f3e;
+  --color-danger: #9e2a2b;
+  --color-dark: #540b0e;
+  --color-bg: #ffffff;
+  --color-text: #1a1a1a;
+  --color-border: #e0e0e0;
+  --font-primary: 'Montserrat', sans-serif;
+  --spacing-xs: 0.4rem;
+  --spacing-sm: 0.8rem;
+  --spacing-md: 1.6rem;
+  --spacing-lg: 2.4rem;
+  --spacing-xl: 3.2rem;
+  --radius-sm: 0.4rem;
+  --radius-md: 0.8rem;
+  --radius-lg: 1.6rem;
+
+  --home-transition: 0.2s ease;
+  --home-shadow: 0 2px 12px rgba(0, 0, 0, 0.07);
+}
+
+/* ============================================================
+   BLOCK: home
+   ============================================================ */
 .home {
-  margin-left: 24rem; /* espacio del navbar */
-  padding: var(--spacing-xl);
-}
-
-/* =========================
-   TITLE
-========================= */
-
-.home__title {
-  font-size: 2.4rem;
-  font-weight: 700;
-  color: var(--color-primary);
-  margin-bottom: var(--spacing-xl);
-}
-
-/* =========================
-   CARDS CONTAINER
-========================= */
-
-.home__cards {
+  margin-left: 24rem;
+  padding: var(--spacing-xl) var(--spacing-lg);
   display: flex;
-  gap: var(--spacing-lg);
+  flex-direction: column;
+  gap: var(--spacing-xl);
+  animation: fadeUp 0.4s ease both;
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(1.2rem); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── ELEMENT: header ── */
+.home__header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--spacing-md);
   flex-wrap: wrap;
 }
 
-/* =========================
-   CARD
-========================= */
-
-.home__card {
-  flex: 1;
-  min-width: 28rem;
-
-  background-color: var(--color-secondary);
-  border: 3px solid var(--color-dark);
-  border-radius: var(--radius-lg);
-
-  padding: var(--spacing-lg);
-
+.home__title-group {
   display: flex;
   flex-direction: column;
+  gap: var(--spacing-xs);
+}
+
+.home__greeting {
+  font-size: 1.4rem;
+  color: #6b7280;
+  font-weight: 500;
+}
+
+.home__title {
+  font-size: 3.2rem;
+  font-weight: 700;
+  color: var(--color-primary);
+  letter-spacing: -0.06rem;
+  line-height: 1.1;
+}
+
+.home__date {
+  font-size: 1.3rem;
+  color: #9ca3af;
+  font-weight: 500;
+  text-transform: capitalize;
+  text-align: right;
+}
+
+/* ============================================================
+   ELEMENT: stats
+   ============================================================ */
+.home__stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(22rem, 1fr));
   gap: var(--spacing-md);
 }
 
-/* =========================
-   CARD TITLE
-========================= */
-
-.home__card-title {
-  font-size: 1.6rem;
-  font-weight: 600;
-  color: var(--color-dark);
+/* ── ELEMENT: stat card ── */
+.home__stat-card {
+  background-color: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-lg);
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  box-shadow: var(--home-shadow);
+  position: relative;
+  overflow: hidden;
+  transition: transform var(--home-transition), box-shadow var(--home-transition);
 }
 
-/* =========================
-   CARD CONTENT (placeholder)
-========================= */
+.home__stat-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(51, 92, 103, 0.1);
+}
 
-.home__card-content {
-  height: 6rem;
-  border: 2px solid var(--color-dark);
+/* Franja de color superior */
+.home__stat-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+}
+
+/* MODIFIER: color por tipo */
+.home__stat-card--guests::before      { background-color: var(--color-primary); }
+.home__stat-card--rooms::before       { background-color: var(--color-accent); }
+.home__stat-card--reservations::before { background-color: #6366f1; }
+.home__stat-card--employees::before   { background-color: #10b981; }
+
+/* ── ELEMENT: stat icon ── */
+.home__stat-icon {
+  width: 5rem;
+  height: 5rem;
   border-radius: var(--radius-md);
-  background-color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
 }
+
+.home__stat-icon svg { width: 2.4rem; height: 2.4rem; }
+
+.home__stat-card--guests .home__stat-icon      { background-color: #dceef1; color: var(--color-primary); }
+.home__stat-card--rooms .home__stat-icon       { background-color: #fef3e2; color: var(--color-accent); }
+.home__stat-card--reservations .home__stat-icon { background-color: #ede9fe; color: #6366f1; }
+.home__stat-card--employees .home__stat-icon   { background-color: #d1fae5; color: #10b981; }
+
+/* ── ELEMENT: stat info ── */
+.home__stat-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.home__stat-label {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #6b7280;
+  text-transform: uppercase;
+  letter-spacing: 0.05rem;
+}
+
+.home__stat-value {
+  font-size: 3rem;
+  font-weight: 700;
+  color: var(--color-text);
+  line-height: 1;
+}
+
+.home__stat-total {
+  font-size: 1.8rem;
+  font-weight: 500;
+  color: #9ca3af;
+}
+
+.home__stat-delta {
+  font-size: 1.2rem;
+  font-weight: 600;
+}
+
+/* MODIFIER: delta */
+.home__stat-delta--up      { color: #16a34a; }
+.home__stat-delta--down    { color: var(--color-danger); }
+.home__stat-delta--neutral { color: #9ca3af; }
+
