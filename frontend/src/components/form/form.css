@@ -108,6 +108,10 @@
   color: #166534;
   border-bottom: 1px solid #bbf7d0;
 }
+.guest-modal__toast--error {
+  background-color: #fee2e2;
+  color: #991b1b;
+}
 
 .guest-modal__toast svg {
   width: 1.8rem;

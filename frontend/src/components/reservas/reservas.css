@@ -733,3 +733,129 @@
   .modal__info-grid { grid-template-columns: 1fr; }
   .modal__info-item { border-right: none; }
 }
+
+/* Extensiones para el formulario del Modal */
+.modal--large { max-width: 70rem; width: 95%; }
+
+.modal__input {
+  width: 100%;
+  padding: 1rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  font-family: var(--font-primary);
+  font-size: 1.4rem;
+  margin-top: 0.5rem;
+}
+
+.modal__help-text {
+  font-size: 1.2rem;
+  color: #6b7280;
+  margin-top: 0.5rem;
+}
+
+.modal__room-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.room-card {
+  border: 2px solid var(--color-border);
+  padding: 1rem;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: center;
+}
+
+.room-card:hover { border-color: var(--color-primary); background: #f0f5f6; }
+
+.room-card.selected {
+  border-color: var(--color-primary);
+  background-color: #dceef1;
+  font-weight: 600;
+}
+
+.hidden { display: none !important; }
+
+/* Contenedor con scroll para no alargar el modal */
+.modal__guest-selection-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 10px;
+    max-height: 200px;
+    overflow-y: auto;
+    padding: 10px;
+    background: #f9f9f9;
+    border-radius: 8px;
+    border: 1px solid #eee;
+}
+
+/* Diseño de la Card de Huésped */
+.guest-card {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px;
+    background: white;
+    border: 2px solid transparent;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    user-select: none;
+}
+
+.guest-card:hover {
+    background: #f0f7f8;
+    border-color: #d1e3e5;
+}
+
+/* Estado seleccionada */
+.guest-card.selected {
+    border-color: var(--color-primary, #335c67);
+    background: #f0f7f8;
+}
+
+.guest-card__avatar {
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: bold;
+    font-size: 0.8rem;
+    flex-shrink: 0;
+}
+
+.guest-card__info {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.guest-card__name {
+    font-size: 0.9rem;
+    font-weight: 600;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.guest-card__dni {
+    font-size: 0.75rem;
+    color: #666;
+}
+.reservations__badge--aceptada { background: #e3f2fd; color: #1976d2; }
+.reservations__badge--en-proceso { background: #fff3e0; color: #f57c00; }
+.reservations__badge--en-mora { background: #fdecea; color: #d32f2f; animation: pulse 2s infinite; }
+.reservations__badge--terminada { background: #f1f8e9; color: #388e3c; }
+.reservations__badge--cancelada { background: #fafafa; color: #616161; }
+
+@keyframes pulse {
+    0% { opacity: 1; }
+    50% { opacity: 0.6; }
+    100% { opacity: 1; }
+}

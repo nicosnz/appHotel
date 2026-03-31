@@ -1,91 +1,116 @@
-export class Home extends HTMLElement{
-    constructor(){
+export class Home extends HTMLElement {
+    private timerInterval: number | null = null;
+
+    constructor() {
         super();
-    };
-
-
-    connectedCallback(){
-        this.innerHTML = `
-                <main class="container">
-                    <section class="home">
-                
-                    <!-- ===== CABECERA ===== -->
-                    <div class="home__header">
-                        <div class="home__title-group">
-                        <p class="home__greeting">Bienvenido de vuelta 👋</p>
-                        <h1 class="home__title">Hotel Nicosan</h1>
-                        </div>
-                        <div class="home__date" id="homeDate"></div>
-                    </div>
-                
-                    <!-- ===== STAT CARDS ===== -->
-                    <div class="home__stats">
-                
-                        <div class="home__stat-card home__stat-card--guests">
-                        <div class="home__stat-icon">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
-                            <circle cx="12" cy="7" r="4"/>
-                            </svg>
-                        </div>
-                        <div class="home__stat-info">
-                            <p class="home__stat-label">Huéspedes en el hotel</p>
-                            <p class="home__stat-value">24</p>
-                            <p class="home__stat-delta home__stat-delta--up">+3 desde ayer</p>
-                        </div>
-                        </div>
-                
-                        <div class="home__stat-card home__stat-card--rooms">
-                        <div class="home__stat-icon">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
-                            <polyline points="9 22 9 12 15 12 15 22"/>
-                            </svg>
-                        </div>
-                        <div class="home__stat-info">
-                            <p class="home__stat-label">Habitaciones ocupadas</p>
-                            <p class="home__stat-value">14 <span class="home__stat-total">/ 18</span></p>
-                            <p class="home__stat-delta home__stat-delta--neutral">78% de ocupación</p>
-                        </div>
-                        </div>
-                
-                        <div class="home__stat-card home__stat-card--reservations">
-                        <div class="home__stat-icon">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
-                            <line x1="16" y1="2" x2="16" y2="6"/>
-                            <line x1="8" y1="2" x2="8" y2="6"/>
-                            <line x1="3" y1="10" x2="21" y2="10"/>
-                            </svg>
-                        </div>
-                        <div class="home__stat-info">
-                            <p class="home__stat-label">Reservas activas</p>
-                            <p class="home__stat-value">31</p>
-                            <p class="home__stat-delta home__stat-delta--up">+5 esta semana</p>
-                        </div>
-                        </div>
-                
-                        <div class="home__stat-card home__stat-card--employees">
-                        <div class="home__stat-icon">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
-                            <circle cx="9" cy="7" r="4"/>
-                            <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
-                            <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
-                            </svg>
-                        </div>
-                        <div class="home__stat-info">
-                            <p class="home__stat-label">Empleados activos</p>
-                            <p class="home__stat-value">12</p>
-                            <p class="home__stat-delta home__stat-delta--neutral">Sin cambios</p>
-                        </div>
-                        </div>
-                
-                    </div>
-                
-                    
-                </main>
-        `
     }
-};
-customElements.define("app-home",Home);
+
+    connectedCallback() {
+        this.render();
+        this.iniciarReloj();
+    }
+
+    // Limpiamos el intervalo cuando el usuario navega a otra sección
+    disconnectedCallback() {
+        if (this.timerInterval) {
+            clearInterval(this.timerInterval);
+        }
+    }
+
+    private iniciarReloj() {
+        const timeElement = this.querySelector('#bigTime');
+        const dateElement = this.querySelector('#bigDate');
+        const greetingElement = this.querySelector('#bigGreeting');
+
+        const actualizar = () => {
+            const ahora = new Date();
+            
+            // Hora formateada (HH:MM:SS)
+            if (timeElement) {
+                timeElement.textContent = ahora.toLocaleTimeString('es-ES', {
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    second: '2-digit',
+                    hour12: false
+                });
+            }
+
+            // Fecha formateada (Largo)
+            if (dateElement) {
+                dateElement.textContent = ahora.toLocaleDateString('es-ES', {
+                    weekday: 'long',
+                    day: 'numeric',
+                    month: 'long',
+                    year: 'numeric'
+                });
+            }
+
+            // Saludo dinámico según la hora
+            if (greetingElement) {
+                const hora = ahora.getHours();
+                if (hora < 12) greetingElement.textContent = '¡Buen día! 👋';
+                else if (hora < 19) greetingElement.textContent = '¡Buenas tardes! ☀️';
+                else greetingElement.textContent = '¡Buenas noches! 🌙';
+            }
+        };
+
+        actualizar();
+        this.timerInterval = window.setInterval(actualizar, 1000);
+    }
+
+    private render() {
+        this.innerHTML = `
+            <div style="
+                height: 80vh; 
+                display: flex; 
+                flex-direction: column; 
+                justify-content: center; 
+                align-items: center; 
+                text-align: center;
+                font-family: 'Inter', system-ui, sans-serif;
+                color: #1e293b;
+            ">
+                <p id="bigGreeting" style="
+                    font-size: 1.5rem; 
+                    font-weight: 500; 
+                    color: #64748b; 
+                    margin-bottom: 0;
+                    text-transform: uppercase;
+                    letter-spacing: 2px;
+                "></p>
+                
+                <h1 id="bigTime" style="
+                    font-size: clamp(5rem, 15vw, 12rem); 
+                    font-weight: 900; 
+                    margin: -10px 0;
+                    font-variant-numeric: tabular-nums;
+                    letter-spacing: -5px;
+                    background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+                    -webkit-background-clip: text;
+                    -webkit-text-fill-color: transparent;
+                ">00:00:00</h1>
+                
+                <p id="bigDate" style="
+                    font-size: clamp(1rem, 4vw, 2rem); 
+                    font-weight: 500; 
+                    color: #94a3b8;
+                    text-transform: capitalize;
+                "></p>
+
+                <div style="
+                    margin-top: 3rem; 
+                    padding: 10px 20px; 
+                    background: #f1f5f9; 
+                    border-radius: 50px; 
+                    color: #64748b; 
+                    font-size: 0.9rem;
+                    font-weight: 600;
+                ">
+                    SISTEMA DE GESTIÓN HOTEL NICOSAN v3.0
+                </div>
+            </div>
+        `;
+    }
+}
+
+customElements.define("app-home", Home);

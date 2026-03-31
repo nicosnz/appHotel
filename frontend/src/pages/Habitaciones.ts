@@ -117,7 +117,7 @@ export class Habitaciones extends HTMLElement {
                 } else if (filter === 'libres') {
                     this.renderTable(this.allRooms.filter(r => r.estadoHabitacion === EstadoHabitacion.Libre));
                 } else if (filter === 'ocupadas') {
-                    this.renderTable(this.allRooms.filter(r => r.estadoHabitacion === EstadoHabitacion.Reservada));
+                    this.renderTable(this.allRooms.filter(r => r.estadoHabitacion !== EstadoHabitacion.Libre));
                 }
             });
         });

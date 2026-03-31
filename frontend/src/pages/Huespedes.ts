@@ -73,14 +73,7 @@ export class Huespedes extends HTMLElement {
         <td class="guests__table-td">${checkIn}</td>
         <td class="guests__table-td">${checkOut}</td>
         <td class="guests__table-td"><span class="guests__badge ${statusClass}">${h.activo ? 'Activo' : 'Inactivo'}</span></td>
-        <td class="guests__table-td guests__table-td--actions">
-          <button class="guests__action-btn guests__action-btn--edit" title="Editar">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
-          </button>
-          <button class="guests__action-btn guests__action-btn--delete" title="Eliminar" data-id="${h.id}">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
-          </button>
-        </td>
+        
       </tr>
     `;
   }
@@ -91,32 +84,14 @@ export class Huespedes extends HTMLElement {
     this.querySelector('#cancelGuestModal')?.addEventListener('click', () => this.closeModal());
     this.querySelector('#saveGuestBtn')?.addEventListener('click', () => this.handleSave());
 
-    // Validaciones en tiempo real (limpiar error al escribir)
     ['nombre', 'apellido', 'documento', 'genero'].forEach(field => {
       const input = this.querySelector(`#guest${field.charAt(0).toUpperCase() + field.slice(1)}`);
       input?.addEventListener('input', () => this.clearFieldError(field));
     });
 
-    // Buscador
-    this.querySelector('.guests__search-input')?.addEventListener('input', (e) => {
-      const term = (e.target as HTMLInputElement).value.toLowerCase();
-      const filtered = this.guests.filter(g => 
-        g.nombre.toLowerCase().includes(term) || g.documento.includes(term)
-      );
-      this.renderTable(filtered);
-    });
+    
 
-    // Delegación para eliminar
-    this.querySelector('#guestsTableBody')?.addEventListener('click', (e) => {
-        const btn = (e.target as HTMLElement).closest('.guests__action-btn--delete');
-        if (btn) {
-            const id = btn.getAttribute('data-id');
-            if (confirm('¿Eliminar huésped?')) {
-                this.guests = this.guests.filter(g => g.id !== id);
-                this.renderTable(this.guests);
-            }
-        }
-    });
+    
   }
 
   private async handleSave(): Promise<void> {
@@ -148,11 +123,23 @@ export class Huespedes extends HTMLElement {
       
       this.querySelector('#successToast')?.classList.remove('hidden');
       setTimeout(() => this.closeModal(), 1500);
-    } catch (error) {
-      alert('Error al registrar');
+    } catch (error:any) {
+      this.showError(error.message)
     } finally {
       saveBtn.disabled = false;
     }
+  }
+  private showError(message: string): void {
+    let errorBox = this.querySelector('#errorToast') as HTMLElement;
+
+    if (!errorBox) return;
+
+    errorBox.textContent = message;
+    errorBox.classList.remove('hidden');
+
+    setTimeout(() => {
+      errorBox.classList.add('hidden');
+    }, 3000);
   }
 
   private validate(): boolean {
@@ -208,10 +195,7 @@ export class Huespedes extends HTMLElement {
 
           <div class="guests__filters">
             <button class="guests__filter-btn guests__filter-btn--active" data-filter="todos">Todos</button>
-            <button class="guests__filter-btn" data-filter="activos">Activos</button>
-            <div class="guests__search">
-              <input class="guests__search-input" type="text" placeholder="Buscar por nombre o documento..."/>
-            </div>
+           
           </div>
 
           <div class="guests__table-wrapper">
@@ -223,7 +207,6 @@ export class Huespedes extends HTMLElement {
                   <th class="guests__table-th">Fecha Entrada</th>
                   <th class="guests__table-th">Fecha Salida</th>
                   <th class="guests__table-th">Estado</th>
-                  <th class="guests__table-th">Acciones</th>
                 </tr>
               </thead>
               <tbody class="guests__table-body" id="guestsTableBody"></tbody>
@@ -254,18 +237,21 @@ export class Huespedes extends HTMLElement {
                <polyline points="20 6 9 17 4 12"/> 
              </svg> 
              <span>Huésped registrado correctamente.</span> 
-           </div> 
+           </div>
+           <div class="guest-modal__toast guest-modal__toast--error hidden" id="errorToast">
+              <span>Error</span>
+          </div>
 
            <form class="guest-modal__form" id="guestForm" novalidate> 
              <div class="guest-modal__row"> 
                <div class="guest-modal__field" id="field-nombre"> 
                  <label class="guest-modal__label-field" for="guestNombre">Nombre *</label> 
-                 <input class="guest-modal__input" type="text" id="guestNombre" name="nombre" placeholder="Santiago"> 
+                 <input class="guest-modal__input" type="text" id="guestNombre" name="nombre" placeholder="Nombre"> 
                  <p class="guest-modal__error hidden" id="error-nombre">El nombre es obligatorio.</p> 
                </div> 
                <div class="guest-modal__field" id="field-apellido"> 
                  <label class="guest-modal__label-field" for="guestApellido">Apellido *</label> 
-                 <input class="guest-modal__input" type="text" id="guestApellido" name="apellido" placeholder="Sánchez"> 
+                 <input class="guest-modal__input" type="text" id="guestApellido" name="apellido" placeholder="Apellido"> 
                  <p class="guest-modal__error hidden" id="error-apellido">El apellido es obligatorio.</p> 
                </div> 
              </div> 
@@ -273,7 +259,7 @@ export class Huespedes extends HTMLElement {
              <div class="guest-modal__row"> 
                <div class="guest-modal__field" id="field-documento"> 
                  <label class="guest-modal__label-field" for="guestDocumento">Documento *</label> 
-                 <input class="guest-modal__input" type="text" id="guestDocumento" name="documento" placeholder="1234567"> 
+                 <input class="guest-modal__input" type="text" id="guestDocumento" name="documento" placeholder="C.I"> 
                  <p class="guest-modal__error hidden" id="error-documento">El documento es obligatorio.</p> 
                </div> 
                <div class="guest-modal__field" id="field-genero"> 
