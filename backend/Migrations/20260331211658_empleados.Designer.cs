@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using backend.Data;
@@ -11,9 +12,11 @@ using backend.Data;
 namespace backend.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260331211658_empleados")]
+    partial class empleados
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -75,63 +78,6 @@ namespace backend.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Empleados", (string)null);
-
-                    b.HasData(
-                        new
-                        {
-                            Id = new Guid("11111111-1111-1111-1111-111111111111"),
-                            Activo = false,
-                            Apellido = "Perez",
-                            Documento = "1234567",
-                            Genero = "Masculino",
-                            Nombre = "Juan",
-                            TipoEmpleado = "COCINA",
-                            TurnoEmpleado = "MANANA"
-                        },
-                        new
-                        {
-                            Id = new Guid("22222222-2222-2222-2222-222222222222"),
-                            Activo = false,
-                            Apellido = "Lopez",
-                            Documento = "2345678",
-                            Genero = "Femenino",
-                            Nombre = "Maria",
-                            TipoEmpleado = "LIMPIEZA",
-                            TurnoEmpleado = "MANANA"
-                        },
-                        new
-                        {
-                            Id = new Guid("33333333-3333-3333-3333-333333333333"),
-                            Activo = false,
-                            Apellido = "Gomez",
-                            Documento = "3456789",
-                            Genero = "Masculino",
-                            Nombre = "Carlos",
-                            TipoEmpleado = "MANTENIMIENTO",
-                            TurnoEmpleado = "MANANA"
-                        },
-                        new
-                        {
-                            Id = new Guid("44444444-4444-4444-4444-444444444444"),
-                            Activo = true,
-                            Apellido = "Rojas",
-                            Documento = "4567890",
-                            Genero = "Femenino",
-                            Nombre = "Ana",
-                            TipoEmpleado = "COCINA",
-                            TurnoEmpleado = "NOCHE"
-                        },
-                        new
-                        {
-                            Id = new Guid("55555555-5555-5555-5555-555555555555"),
-                            Activo = true,
-                            Apellido = "Martinez",
-                            Documento = "5678901",
-                            Genero = "Masculino",
-                            Nombre = "Luis",
-                            TipoEmpleado = "MANTENIMIENTO",
-                            TurnoEmpleado = "TARDE"
-                        });
                 });
 
             modelBuilder.Entity("backend.Models.Habitacion", b =>

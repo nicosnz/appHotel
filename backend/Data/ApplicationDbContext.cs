@@ -14,6 +14,7 @@ namespace backend.Data
         public DbSet<Reserva> Reservas {get;set;}
         public DbSet<Habitacion> Habitaciones {get;set;}
         public DbSet<Huesped> Huespedes {get;set;}
+        public DbSet<Empleado> Empleados {get;set;}
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -27,7 +28,20 @@ namespace backend.Data
                 entity.Property(h => h.Apellido).IsRequired().HasMaxLength(50);
                 entity.Property(h => h.Documento).IsRequired().HasMaxLength(7);
                 entity.Property(h => h.Genero);
+                entity.Property(h => h.Activo);
                 modelBuilder.Entity<Huesped>().HasMany(h => h.Reservas).WithMany(r => r.Huespedes).UsingEntity(n => n.ToTable("Huespes_Reservas"));
+            });
+            modelBuilder.Entity<Empleado>(entity =>
+            {
+                entity.ToTable("Empleados");
+                entity.HasKey(e => e.Id);
+                entity.Property(e => e.Nombre).IsRequired().HasMaxLength(50);
+                entity.Property(e => e.Apellido).IsRequired().HasMaxLength(50);
+                entity.Property(e => e.Documento).IsRequired().HasMaxLength(7);
+                entity.Property(e => e.Genero);
+                entity.Property(e => e.TipoEmpleado).HasConversion<string>();
+                entity.Property(e => e.TurnoEmpleado).HasConversion<string>();
+                entity.Property(e => e.Activo);
             });
 
             modelBuilder.Entity<Habitacion>(entity =>
@@ -50,13 +64,23 @@ namespace backend.Data
                 entity.Property(r => r.EstadoReserva).HasConversion<string>();
                 entity.Property(r => r.Mora);
                 entity.Property(r => r.PrecioTotal);
-                entity.Property(r => r.FechaCheckInEsperado);
+                entity.Property(r => r.FechaCheckInEsperado).HasColumnType("date");
                 entity.Property(r => r.FechaCheckInActual).IsRequired(false);
-                entity.Property(r => r.FechaCheckOutEsperado);
+                entity.Property(r => r.FechaCheckOutEsperado).HasColumnType("date");
                 entity.Property(r => r.FechaCheckOutActual).IsRequired(false);
                 entity.HasOne(r => r.Habitacion).WithMany(h => h.Reservas).HasForeignKey(r => r.HabitacionId);
 
             });
+            
+            modelBuilder.Entity<Empleado>().HasData(
+                new Empleado { Id = Guid.Parse("11111111-1111-1111-1111-111111111111"), Nombre = "Juan", Apellido = "Perez", Documento = "1234567", Genero = "Masculino", TipoEmpleado = TipoEmpleado.COCINA, TurnoEmpleado = TurnoEmpleado.MANANA, Activo = false },
+                new Empleado { Id = Guid.Parse("22222222-2222-2222-2222-222222222222"), Nombre = "Maria", Apellido = "Lopez", Documento = "2345678", Genero = "Femenino", TipoEmpleado = TipoEmpleado.LIMPIEZA, TurnoEmpleado = TurnoEmpleado.MANANA, Activo = false },
+                new Empleado { Id = Guid.Parse("33333333-3333-3333-3333-333333333333"), Nombre = "Carlos", Apellido = "Gomez", Documento = "3456789", Genero = "Masculino", TipoEmpleado = TipoEmpleado.MANTENIMIENTO, TurnoEmpleado = TurnoEmpleado.MANANA, Activo = false },
+                new Empleado { Id = Guid.Parse("44444444-4444-4444-4444-444444444444"), Nombre = "Ana", Apellido = "Rojas", Documento = "4567890", Genero = "Femenino", TipoEmpleado = TipoEmpleado.COCINA, TurnoEmpleado = TurnoEmpleado.NOCHE, Activo = true },
+                new Empleado { Id = Guid.Parse("55555555-5555-5555-5555-555555555555"), Nombre = "Luis", Apellido = "Martinez", Documento = "5678901", Genero = "Masculino", TipoEmpleado = TipoEmpleado.MANTENIMIENTO, TurnoEmpleado = TurnoEmpleado.TARDE, Activo = true }
+
+            );
+
 
             modelBuilder.Entity<Habitacion>().HasData(
                 new Habitacion

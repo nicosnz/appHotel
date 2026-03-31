@@ -13,5 +13,7 @@ namespace backend.Repositories.Habitaciones
         Task<List<Habitacion>> GetHabitacionesTipo(string TipoHabitacion);
         Task<List<Habitacion>> GetHabitacionesEstado(string EstadoHabitacion);
         Task UpdateEstadoHabitacion(Guid Id,string estadoNuevo);
+        Task<List<Habitacion>> GetHabitacionesDisponibles(DateOnly fechaInicio, DateOnly fechaFin);
+        Task<bool> EstaDisponible(Guid habitacionId,DateOnly fechaInicio,DateOnly fechaFin);
     }
 }

@@ -35,6 +35,7 @@ namespace backend.Services.Huespedes
                 HabitacionId = reserva.HabitacionId,
                 FechaCheckInActual = reserva.FechaCheckInActual,
                 FechaCheckOutActual = reserva.FechaCheckOutActual,
+                Mora = reserva.Mora,
 
                 Huespedes = reserva.Huespedes
                     .Where(h => h.Id != Id)
@@ -43,7 +44,8 @@ namespace backend.Services.Huespedes
                         Id = h.Id,
                         Nombre = h.Nombre,
                         Apellido = h.Apellido,
-                        Documento = h.Documento
+                        Documento = h.Documento,
+                        Activo = h.Activo
                     }).ToList()
 
             }).ToList();
@@ -55,6 +57,7 @@ namespace backend.Services.Huespedes
                 Apellido = huesped.Apellido,
                 Documento = huesped.Documento,
                 Genero = huesped.Genero,
+                Activo = huesped.Activo,
                 Reservas = reservasDto
             };
         }

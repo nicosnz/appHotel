@@ -21,26 +21,34 @@ namespace backend.Services.Reservas
         public async Task<bool> CheckIn(Guid Id)
         {
             var reserva = await reservasRepository.GetReservaId(Id);
-            DateTime FechaActual = DateTime.UtcNow;
-            decimal mora = 0;
-            if(FechaActual > reserva.FechaCheckInEsperado && FechaActual < reserva.FechaCheckOutEsperado)
-            {
-                mora = MoraAtraso.CalcularMora(FechaActual,reserva.FechaCheckInEsperado);
-                await reservasRepository.UpdateFechaCheckInActual(reserva.Id,FechaActual);
-                await reservasRepository.UpdateMora(reserva.Id,mora);
-                await reservasRepository.UpdateEstadoReserva(reserva.Id,"EN_PROCESO");
-                await habitacionRepository.UpdateEstadoHabitacion(reserva.HabitacionId,"OCUPADA");
-                return true;
-            }
-            else if(FechaActual < reserva.FechaCheckInEsperado)
-            {
-                await habitacionRepository.UpdateEstadoHabitacion(reserva.HabitacionId,"OCUPADA");
-                await reservasRepository.UpdateFechaCheckInActual(reserva.Id,FechaActual);
-                await reservasRepository.UpdateEstadoReserva(reserva.Id,"EN_PROCESO");
-                return true;
-            }
-            return false;
 
+            var ahora = DateTime.UtcNow;
+            var hoy = DateOnly.FromDateTime(ahora);
+
+            decimal mora = 0;
+
+            if (hoy > reserva.FechaCheckInEsperado && hoy < reserva.FechaCheckOutEsperado)
+            {
+                mora = MoraAtraso.CalcularMora(ahora, reserva.FechaCheckInEsperado.ToDateTime(TimeOnly.MinValue));
+
+                await reservasRepository.UpdateFechaCheckInActual(reserva.Id, ahora);
+                await reservasRepository.UpdateMora(reserva.Id, mora);
+                await reservasRepository.UpdateEstadoReserva(reserva.Id, "EN_PROCESO");
+                await habitacionRepository.UpdateEstadoHabitacion(reserva.HabitacionId, "OCUPADA");
+
+                return true;
+            }
+
+            else if (hoy == reserva.FechaCheckInEsperado)
+            {
+                await reservasRepository.UpdateFechaCheckInActual(reserva.Id, ahora);
+                await reservasRepository.UpdateEstadoReserva(reserva.Id, "EN_PROCESO");
+                await habitacionRepository.UpdateEstadoHabitacion(reserva.HabitacionId, "OCUPADA");
+
+                return true;
+            }
+
+            throw new InvalidOperationException("Solo se puede realizar el Check In el dia esperado");
         }
     }
 }

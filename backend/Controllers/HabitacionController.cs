@@ -18,14 +18,16 @@ namespace backend.Controllers
         private readonly ObtenerHabitacionesEstado obtenerHabitacionesEstado;
         private readonly ObtenerHabitacionesTipo obtenerHabitacionesTipo;
         private readonly ObtenerHabitacionId obtenerHabitacionId;
+        private readonly ObtenerHabitacionesRangoFecha obtenerHabitacionesRangoFecha;
 
-        public HabitacionController(ILogger<HabitacionController> logger, ObtenerHabitaciones obtenerHabitaciones, ObtenerHabitacionesEstado obtenerHabitacionesEstado, ObtenerHabitacionesTipo obtenerHabitacionesTipo, ObtenerHabitacionId obtenerHabitacionId)
+        public HabitacionController(ILogger<HabitacionController> logger, ObtenerHabitaciones obtenerHabitaciones, ObtenerHabitacionesEstado obtenerHabitacionesEstado, ObtenerHabitacionesTipo obtenerHabitacionesTipo, ObtenerHabitacionId obtenerHabitacionId, ObtenerHabitacionesRangoFecha obtenerHabitacionesRangoFecha)
         {
             _logger = logger;
             this.obtenerHabitaciones = obtenerHabitaciones;
             this.obtenerHabitacionesEstado = obtenerHabitacionesEstado;
             this.obtenerHabitacionesTipo = obtenerHabitacionesTipo;
             this.obtenerHabitacionId = obtenerHabitacionId;
+            this.obtenerHabitacionesRangoFecha = obtenerHabitacionesRangoFecha;
         }
 
         [HttpGet]
@@ -55,6 +57,18 @@ namespace backend.Controllers
         {
             var habitaciones = await this.obtenerHabitacionId.GetHabitacionId(habitacionId);
             return habitaciones;
+        }
+        [HttpGet("disponibles")]
+        public async Task<IActionResult> GetHabitacionesDisponibles(
+            [FromQuery] string fechaInicio,
+            [FromQuery] string fechaFin)
+        {
+            var inicio = DateOnly.Parse(fechaInicio);
+            var fin = DateOnly.Parse(fechaFin);
+
+            var habitaciones = await obtenerHabitacionesRangoFecha.HabitacionesDisponiblesPorFecha(inicio, fin);
+
+            return Ok(habitaciones ?? new List<Habitacion>());
         }
 
 

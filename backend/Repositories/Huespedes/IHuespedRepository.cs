@@ -11,9 +11,13 @@ namespace backend.Repositories.Huespedes
     {
         Task<Guid> Add(Huesped nuevoHuesped);
         Task<Huesped> GetById(Guid id);
+        Task<Huesped> GetByDocumento(string Documento);
         Task<List<Huesped>> GetAll();
         Task<List<Huesped>> GetListHuespedes(List<Guid> huespedes);
         Task<Huesped> GetByIdWithReservas(Guid id);
+        Task UpdateActivo(Guid id);
+        Task UpdateInactivo(Guid id);
+        Task<List<Huesped>> HuespedesInactivos();
 
 
         

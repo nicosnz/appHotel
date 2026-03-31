@@ -25,19 +25,51 @@ namespace backend.Services.Reservas
 
         public async Task<Guid> Crear(ReservaCreateDto reservaNueva)
         {
-            var huespedes = await huespedRepository.GetListHuespedes(reservaNueva.HuespedesIds);
-            var habitacion = await habitacionRepository.GetHabitacionById(reservaNueva.HabitacionId);
-            if (habitacion.EstadoHabitacion != EstadoHabitacion.LIBRE)
+            var hoy = DateOnly.FromDateTime(DateTime.UtcNow);
+            if (reservaNueva.FechaCheckInEsperado < hoy)
             {
-                throw new InvalidOperationException("La habitación no está disponible para reservar.");
-
+                throw new InvalidOperationException("La fecha de check-in no puede ser menor a hoy.");
             }
-            if(huespedes.Count > habitacion.CapacidadPersonas)
+
+            if (reservaNueva.FechaCheckOutEsperado <= reservaNueva.FechaCheckInEsperado)
+            {
+                throw new InvalidOperationException("La fecha de check-out debe ser mayor al check-in.");
+            }
+
+            List<Huesped> huespedes = new List<Huesped>();
+            foreach (var huespedId in reservaNueva.HuespedesIds)
+            {
+                var huesped = await huespedRepository.GetById(huespedId);
+                if(huesped.Activo == true)
+                {
+                    throw new InvalidOperationException("El usuario ya esta en otra reserva.");
+                }
+                
+            }
+            var habitacionDisponible = await habitacionRepository.EstaDisponible(
+                reservaNueva.HabitacionId,
+                reservaNueva.FechaCheckInEsperado,
+                reservaNueva.FechaCheckOutEsperado
+            );
+
+            if (!habitacionDisponible)
+            {
+                throw new InvalidOperationException("La habitación no está disponible en esas fechas.");
+            }
+            var habitacion = await habitacionRepository.GetHabitacionById(reservaNueva.HabitacionId);
+            if( reservaNueva.HuespedesIds.Count > habitacion.CapacidadPersonas)
             {
                 throw new InvalidOperationException("La cantidad de huespedes excede la capacidad de la habitación");
             }
+            foreach (var huespedId in reservaNueva.HuespedesIds)
+            {
+                var huesped = await huespedRepository.GetById(huespedId);
+                await huespedRepository.UpdateActivo(huesped.Id);
+                huespedes.Add(huesped);
+                
+            }
             await habitacionRepository.UpdateEstadoHabitacion(habitacion.Id,"RESERVADA");
-            decimal precioTotal = habitacion.Precio * huespedes.Count;
+            decimal precioTotal = habitacion.Precio * (reservaNueva.FechaCheckOutEsperado.DayNumber - reservaNueva.FechaCheckInEsperado.DayNumber);
             var reserva = Reserva.Crear(huespedes,reservaNueva.HabitacionId,habitacion,reservaNueva.FechaCheckInEsperado,reservaNueva.FechaCheckOutEsperado,precioTotal);
             var reservaId = await reservasRepository.Add(reserva);
             return reservaId;

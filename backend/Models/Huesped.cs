@@ -14,6 +14,7 @@ namespace backend.Models
         public string Apellido { get; set; }
         public string Documento { get; set; }
         public string Genero { get; set; }
+        public bool Activo {get;set;}
         public List<Reserva> Reservas {get;set;}
         public Huesped(Guid id, string nombre, string apellido, string documento, string genero)
         {
@@ -22,6 +23,7 @@ namespace backend.Models
             Apellido = apellido;
             Documento = documento;
             Genero = genero;
+            Activo = false;
             Reservas = new List<Reserva>();
             
         }

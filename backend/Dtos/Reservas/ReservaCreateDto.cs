@@ -10,8 +10,8 @@ namespace backend.Dtos.Reservas
     {
         public List<Guid> HuespedesIds { get; set; }
         public Guid HabitacionId {get;set;}
-        public DateTime FechaCheckInEsperado {get;set;}
-        public DateTime FechaCheckOutEsperado {get; set;}
+        public DateOnly FechaCheckInEsperado {get;set;}
+        public DateOnly FechaCheckOutEsperado {get; set;}
         public decimal PrecioTotal { get; set; }
     }
 }

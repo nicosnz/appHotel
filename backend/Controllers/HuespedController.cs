@@ -20,20 +20,22 @@ namespace backend.Controllers
         private readonly ObtenerHuespedId obtenerHuespedId;
         private readonly ObtenerHuespedes obtenerHuespedes;
         private readonly ObtenerHuespedConReservas obtenerHuespedConReservas;
+        private readonly ObtenerHuespedesInactivos obtenerHuespedesInactivos;
 
-        public HuespedController(ILogger<HuespedController> logger, CrearHuesped crearHuesped, ObtenerHuespedId obtenerHuespedId, ObtenerHuespedes obtenerHuespedes, ObtenerHuespedConReservas obtenerHuespedConReservas)
+        public HuespedController(ILogger<HuespedController> logger, CrearHuesped crearHuesped, ObtenerHuespedId obtenerHuespedId, ObtenerHuespedes obtenerHuespedes, ObtenerHuespedConReservas obtenerHuespedConReservas, ObtenerHuespedesInactivos obtenerHuespedesInactivos)
         {
             _logger = logger;
             this.crearHuesped = crearHuesped;
             this.obtenerHuespedId = obtenerHuespedId;
             this.obtenerHuespedes = obtenerHuespedes;
             this.obtenerHuespedConReservas = obtenerHuespedConReservas;
+            this.obtenerHuespedesInactivos = obtenerHuespedesInactivos;
         }
 
 
 
         [HttpGet]
-        public async Task<List<Huesped>> GetAll()
+        public async Task<List<HuespedResponseGetDto>> GetAll()
         {
             var huespedes = await obtenerHuespedes.GetAll();
             return huespedes;
@@ -53,14 +55,28 @@ namespace backend.Controllers
             var huesped = await obtenerHuespedConReservas.ObtenerHuespedReserva(huespedId);
             return huesped;
         }
+        [HttpGet("inactivos")]
+
+        public async Task<List<Huesped>> GetInactivos()
+        {
+            var huespedes = await obtenerHuespedesInactivos.HuespedesInactivos();
+            return huespedes;
+        }
 
         [HttpPost]
         
-        public async Task<Guid> Add([FromBody]HuespedCreateDto nuevoHuesped)
+        public async Task<IActionResult> Add([FromBody]HuespedCreateDto nuevoHuesped)
         {
             
-            var huespedId = await this.crearHuesped.Crear(nuevoHuesped);
-            return huespedId;
+            try
+            {
+                var huespedId = await crearHuesped.Crear(nuevoHuesped);
+                return Ok(huespedId);
+            }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(new { mensaje = ex.Message });
+            }
         }
         
     }

@@ -19,6 +19,15 @@ namespace backend.Services.Huespedes
 
         public async Task<Guid> Crear(HuespedCreateDto nuevoHuesped)
         {
+            if(nuevoHuesped.Documento.Length != 7)
+            {
+                throw new InvalidOperationException("El documento debe de ser de 7 caracteres");
+            }
+            var huespedEnDb = await huespedRepository.GetByDocumento(nuevoHuesped.Documento);
+            if (huespedEnDb != null)
+            {
+                throw new InvalidOperationException("Este usuario ya existe");
+            }
             var huesped = Huesped.Crear(nuevoHuesped.Nombre,nuevoHuesped.Apellido,nuevoHuesped.Documento,nuevoHuesped.Genero);
             var id = await huespedRepository.Add(huesped);
             return id;

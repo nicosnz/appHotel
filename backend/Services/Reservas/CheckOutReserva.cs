@@ -21,27 +21,38 @@ namespace backend.Services.Reservas
         public async Task<bool> CheckOut(Guid Id)
         {
             var reserva = await reservasRepository.GetReservaId(Id);
-            DateTime FechaActual = DateTime.UtcNow;
+
+            var ahora = DateTime.UtcNow;
+            var hoy = DateOnly.FromDateTime(ahora);
+
             decimal mora = 0;
-            if(FechaActual > reserva.FechaCheckOutEsperado && FechaActual > reserva.FechaCheckInEsperado)
-            {
-                mora = MoraAtraso.CalcularMora(FechaActual,reserva.FechaCheckInEsperado);
-                await reservasRepository.UpdateFechaCheckOutActual(reserva.Id,FechaActual);
-                await reservasRepository.UpdateMora(reserva.Id,mora);
-                await reservasRepository.UpdateEstadoReserva(reserva.Id,"TERMINADA");
-                await habitacionRepository.UpdateEstadoHabitacion(reserva.HabitacionId,"LIBRE");
-                return true;
-            }
-            else if(FechaActual < reserva.FechaCheckOutEsperado)
-            {
-                await habitacionRepository.UpdateEstadoHabitacion(reserva.HabitacionId,"LIBRE");
 
-                await reservasRepository.UpdateFechaCheckOutActual(reserva.Id,FechaActual);
-                await reservasRepository.UpdateEstadoReserva(reserva.Id,"TERMINADA");
+            if (hoy > reserva.FechaCheckOutEsperado)
+            {
+                mora = MoraAtraso.CalcularMora(
+                    ahora,
+                    reserva.FechaCheckOutEsperado.ToDateTime(TimeOnly.MinValue)
+                );
+
+                await reservasRepository.UpdateFechaCheckOutActual(reserva.Id, ahora);
+                await reservasRepository.UpdateMora(reserva.Id, mora);
+                await reservasRepository.UpdateEstadoReserva(reserva.Id, "TERMINADA");
+                await habitacionRepository.UpdateEstadoHabitacion(reserva.HabitacionId, "LIBRE");
+
                 return true;
             }
+
+            else if (hoy <= reserva.FechaCheckOutEsperado)
+            {
+                await reservasRepository.UpdateFechaCheckOutActual(reserva.Id, ahora);
+                await reservasRepository.UpdateEstadoReserva(reserva.Id, "TERMINADA");
+                await habitacionRepository.UpdateEstadoHabitacion(reserva.HabitacionId, "LIBRE");
+
+                return true;
+            }
+
+            // ❌ Caso inválido
             return false;
-
         }
     }
 }

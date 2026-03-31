@@ -14,11 +14,12 @@ namespace backend.Dtos.Reservas
         public List<HuespedResponseDto> Huespedes { get; set; }  
         public Guid HabitacionId { get; set; }
         public EstadoReserva EstadoReserva { get; set; }
-        public DateTime FechaCheckInEsperado { get; set; }
-        public DateTime FechaCheckOutEsperado { get; set; }
+        public DateOnly FechaCheckInEsperado {get;set;}
+        public DateOnly FechaCheckOutEsperado {get; set;}
         public DateTime? FechaCheckInActual { get; set; }
         public DateTime? FechaCheckOutActual { get; set; }
         public decimal PrecioTotal { get; set; }
+        public decimal Mora { get; set; }
         public HabitacionResponseSimpleDto Habitacion {get;set;}
 
     }

@@ -25,8 +25,14 @@ namespace backend.Repositories.Huespedes
 
         public async Task<List<Huesped>> GetAll()
         {
-            var huespedes = await applicationDbContext.Huespedes.ToListAsync();
+            
+            var huespedes = await applicationDbContext.Huespedes.Include(h => h.Reservas)
+                    .ThenInclude(r => r.Huespedes)
+                .Include(h => h.Reservas)
+                    .ThenInclude(r=> r.Habitacion)
+            .ToListAsync();
             return huespedes;
+            
         }
 
         public async Task<Huesped> GetById(Guid id)
@@ -42,6 +48,7 @@ namespace backend.Repositories.Huespedes
             foreach (var id in huespedes)
             {
                 var huesped = await GetById(id);
+                await UpdateActivo(huesped.Id);
                 listaHuespedes.Add(huesped);
             }
             return listaHuespedes;
@@ -54,6 +61,31 @@ namespace backend.Repositories.Huespedes
                     .ThenInclude(r=> r.Habitacion)
             .FirstOrDefaultAsync(h => h.Id == id);
             return huesped;
+        }
+
+        public async Task<Huesped> GetByDocumento(string Documento)
+        {
+           var huesped = await applicationDbContext.Huespedes.FirstOrDefaultAsync(h => h.Documento == Documento);
+           return huesped;
+        }
+
+        public async Task UpdateActivo(Guid id)
+        {
+            var huesped = await applicationDbContext.Huespedes.FirstOrDefaultAsync(h => h.Id == id);
+            huesped.Activo = true;
+            await applicationDbContext.SaveChangesAsync();
+        }
+
+        public async Task UpdateInactivo(Guid id)
+        {
+            var huesped = await applicationDbContext.Huespedes.FirstOrDefaultAsync(h => h.Id == id);
+            huesped.Activo = false;
+            await applicationDbContext.SaveChangesAsync();
+        }
+        public async Task<List<Huesped>> HuespedesInactivos()
+        {
+            var huespedes = await applicationDbContext.Huespedes.Where(h => h.Activo == false).ToListAsync();
+            return huespedes;
         }
     }
 }

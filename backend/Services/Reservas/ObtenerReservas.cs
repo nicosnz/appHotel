@@ -59,6 +59,7 @@ namespace backend.Services.Reservas
                     FechaCheckOutEsperado = reserva.FechaCheckOutEsperado,
                     FechaCheckOutActual = reserva.FechaCheckOutActual,
                     PrecioTotal = reserva.PrecioTotal,
+                    Mora = reserva.Mora,
                     Habitacion = habitacionDto
                     
                 };

@@ -54,5 +54,29 @@ namespace backend.Repositories.Habitaciones
             habitacion.EstadoHabitacion = estadoEnum;
             await applicationDbContext.SaveChangesAsync();
         }
+        public async Task<List<Habitacion>> GetHabitacionesDisponibles(DateOnly fechaInicio, DateOnly fechaFin)
+        {
+            var habitaciones = await applicationDbContext.Habitaciones
+                .Include(h => h.Reservas)
+                .Where(h => !h.Reservas.Any(r =>
+                    r.FechaCheckInEsperado < fechaFin &&
+                    r.FechaCheckOutEsperado > fechaInicio
+                ))
+                .ToListAsync();
+
+            return habitaciones;
+        }
+        public async Task<bool> EstaDisponible(
+            Guid habitacionId,
+            DateOnly fechaInicio,
+            DateOnly fechaFin)
+        {
+            return !await applicationDbContext.Reservas
+                .AnyAsync(r =>
+                    r.HabitacionId == habitacionId &&
+                    r.FechaCheckInEsperado < fechaFin &&
+                    r.FechaCheckOutEsperado > fechaInicio
+                );
+        }
     }
 }

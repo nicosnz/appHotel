@@ -20,8 +20,9 @@ namespace backend.Controllers
         private readonly ObtenerReservasEstado obtenerReservasEstado;
         private readonly CheckInReserva checkInReserva;
         private readonly CheckOutReserva checkOutReserva;
+        private readonly CancelarReserva cancelarReserva;
 
-        public ReservaController(ILogger<ReservaController> logger, CrearReserva crearReserva, ObtenerReservaId obtenerReservaId, ObtenerReservas obtenerReservas, ObtenerReservasEstado obtenerReservasEstado, CheckInReserva checkInReserva, CheckOutReserva checkOutReserva)
+        public ReservaController(ILogger<ReservaController> logger, CrearReserva crearReserva, ObtenerReservaId obtenerReservaId, ObtenerReservas obtenerReservas, ObtenerReservasEstado obtenerReservasEstado, CheckInReserva checkInReserva, CheckOutReserva checkOutReserva, CancelarReserva cancelarReserva)
         {
             _logger = logger;
             this.crearReserva = crearReserva;
@@ -30,6 +31,7 @@ namespace backend.Controllers
             this.obtenerReservasEstado = obtenerReservasEstado;
             this.checkInReserva = checkInReserva;
             this.checkOutReserva = checkOutReserva;
+            this.cancelarReserva = cancelarReserva;
         }
         [HttpGet("{reservaId}")]
 
@@ -55,26 +57,53 @@ namespace backend.Controllers
 
         [HttpPost]
 
-        public async Task<Guid> PostReserva([FromBody]ReservaCreateDto reservaNueva)
+        public async Task<IActionResult> PostReserva([FromBody] ReservaCreateDto reservaNueva)
         {
-            var reservaId = await crearReserva.Crear(reservaNueva);
-            return reservaId;
+            try
+            {
+                var reservaId = await crearReserva.Crear(reservaNueva);
+                return Ok(reservaId);
+            }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(new { mensaje = ex.Message });
+            }
         }
         [HttpPost("checkIn/{reservaId}")]
 
         public async Task<IActionResult> CheckIn(Guid reservaId)
-        {
-            var resultado = await checkInReserva.CheckIn(reservaId);
-
-            if (!resultado)
+        {   
+            try
             {
-                return BadRequest("No se pudo realizar el check-in");
+                var resultado = await checkInReserva.CheckIn(reservaId);
+
+                return Ok(new
+                {
+                    mensaje = "Check-in realizado correctamente"
+                });
             }
-
-            return Ok(new
+            catch (InvalidOperationException ex)
             {
-                mensaje = "Check-in realizado correctamente"
-            });
+                return BadRequest(new { mensaje = ex.Message });
+            }
+        }
+        [HttpPost("cancelar/{reservaId}")]
+
+        public async Task<IActionResult> CancelarReserva(Guid reservaId)
+        {   
+            try
+            {
+                await cancelarReserva.Cancelar(reservaId);
+
+                return Ok(new
+                {
+                    mensaje = "Reserva Cancelada Correctamente"
+                });
+            }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(new { mensaje = ex.Message });
+            }
         }
         [HttpPost("checkOut/{reservaId}")]
 

@@ -1,8 +1,10 @@
 using System.Text.Json.Serialization;
 using backend.Data;
+using backend.Repositories.Empleados;
 using backend.Repositories.Habitaciones;
 using backend.Repositories.Huespedes;
 using backend.Repositories.Reservas;
+using backend.Services.Empleados;
 using backend.Services.Habitaciones;
 using backend.Services.Huespedes;
 using backend.Services.Reservas;
@@ -16,7 +18,18 @@ builder.Services.AddControllers().AddJsonOptions(options =>
 {
     options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
 });
+
 builder.Services.AddControllers();
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowFrontend",
+        policy =>
+        {
+            policy.WithOrigins("http://localhost:5173")
+                  .AllowAnyHeader()
+                  .AllowAnyMethod();
+        });
+});
 builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseNpgsql
     (builder.Configuration.GetConnectionString("DefaultConnection")));
 builder.Services.AddOpenApi();
@@ -28,6 +41,7 @@ builder.Services.AddControllers()
 builder.Services.AddScoped<IHuespedRepository,HuespedRepository>();
 builder.Services.AddScoped<IHabitacionRepository,HabitacionRepository>();
 builder.Services.AddScoped<IReservasRepository,ReservasRepository>();
+builder.Services.AddScoped<IEmpleadoRepository,EmpleadosRepository>();
 builder.Services.AddScoped<CrearHuesped>();
 builder.Services.AddScoped<ObtenerHuespedId>();
 builder.Services.AddScoped<ObtenerHuespedes>();
@@ -42,9 +56,15 @@ builder.Services.AddScoped<ObtenerReservasEstado>();
 builder.Services.AddScoped<CheckInReserva>();
 builder.Services.AddScoped<CheckOutReserva>();
 builder.Services.AddScoped<ObtenerHuespedConReservas>();
+builder.Services.AddScoped<ObtenerHuespedesInactivos>();
+builder.Services.AddScoped<ObtenerHabitacionesRangoFecha>();
+builder.Services.AddScoped<CancelarReserva>();
+builder.Services.AddScoped<ObtenerEmpleados>();
 
 var app = builder.Build();
 
+
+app.UseCors("AllowFrontend");
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
