@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using backend.Dtos;
+using backend.Dtos.Huespedes;
 using backend.Models;
 using backend.Services.Huespedes;
 using Microsoft.AspNetCore.Mvc;
@@ -18,13 +19,15 @@ namespace backend.Controllers
         private readonly CrearHuesped crearHuesped;
         private readonly ObtenerHuespedId obtenerHuespedId;
         private readonly ObtenerHuespedes obtenerHuespedes;
+        private readonly ObtenerHuespedConReservas obtenerHuespedConReservas;
 
-        public HuespedController(ILogger<HuespedController> logger, CrearHuesped crearHuesped, ObtenerHuespedId obtenerHuespedId, ObtenerHuespedes obtenerHuespedes)
+        public HuespedController(ILogger<HuespedController> logger, CrearHuesped crearHuesped, ObtenerHuespedId obtenerHuespedId, ObtenerHuespedes obtenerHuespedes, ObtenerHuespedConReservas obtenerHuespedConReservas)
         {
             _logger = logger;
             this.crearHuesped = crearHuesped;
             this.obtenerHuespedId = obtenerHuespedId;
             this.obtenerHuespedes = obtenerHuespedes;
+            this.obtenerHuespedConReservas = obtenerHuespedConReservas;
         }
 
 
@@ -41,6 +44,13 @@ namespace backend.Controllers
         public async Task<Huesped> GetById(Guid huespedId)
         {
             var huesped = await this.obtenerHuespedId.GetHuespedIdAsync(huespedId);
+            return huesped;
+        }
+        [HttpGet("reserva/{huespedId}")]
+
+        public async Task<HuespedResponseGetDto> GetByIdWithReserva(Guid huespedId)
+        {
+            var huesped = await obtenerHuespedConReservas.ObtenerHuespedReserva(huespedId);
             return huesped;
         }
 

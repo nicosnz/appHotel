@@ -5,6 +5,7 @@ namespace backend.Models
         ACEPTADA,
         EN_PROCESO,
         CANCELADA,
-        EN_MORA
+        EN_MORA,
+        TERMINADA
     }
 }

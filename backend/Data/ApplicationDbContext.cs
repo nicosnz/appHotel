@@ -50,6 +50,10 @@ namespace backend.Data
                 entity.Property(r => r.EstadoReserva).HasConversion<string>();
                 entity.Property(r => r.Mora);
                 entity.Property(r => r.PrecioTotal);
+                entity.Property(r => r.FechaCheckInEsperado);
+                entity.Property(r => r.FechaCheckInActual).IsRequired(false);
+                entity.Property(r => r.FechaCheckOutEsperado);
+                entity.Property(r => r.FechaCheckOutActual).IsRequired(false);
                 entity.HasOne(r => r.Habitacion).WithMany(h => h.Reservas).HasForeignKey(r => r.HabitacionId);
 
             });

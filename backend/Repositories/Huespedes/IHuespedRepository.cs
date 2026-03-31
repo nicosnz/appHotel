@@ -12,7 +12,8 @@ namespace backend.Repositories.Huespedes
         Task<Guid> Add(Huesped nuevoHuesped);
         Task<Huesped> GetById(Guid id);
         Task<List<Huesped>> GetAll();
-
+        Task<List<Huesped>> GetListHuespedes(List<Guid> huespedes);
+        Task<Huesped> GetByIdWithReservas(Guid id);
 
 
         

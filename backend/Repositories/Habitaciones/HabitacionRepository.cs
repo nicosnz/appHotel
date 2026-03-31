@@ -45,5 +45,14 @@ namespace backend.Repositories.Habitaciones
             var habitaciones = await applicationDbContext.Habitaciones.Where(h => h.TipoHabitacion == tipoEnum).ToListAsync();
             return habitaciones;
         }
+
+        public async Task UpdateEstadoHabitacion(Guid Id,string estadoNuevo)
+        {
+            var estadoEnum = Enum.Parse<EstadoHabitacion>(estadoNuevo);
+
+            var habitacion = await GetHabitacionById(Id);
+            habitacion.EstadoHabitacion = estadoEnum;
+            await applicationDbContext.SaveChangesAsync();
+        }
     }
 }
