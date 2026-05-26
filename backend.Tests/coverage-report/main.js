@@ -290,25 +290,11 @@ var assemblies = [
   {
     "name": "backend",
     "classes": [
-      { "name": "backend.Services.Empleados.ObtenerEmpleados", "rp": "backend_ObtenerEmpleados.html", "cl": 0, "ucl": 8, "cal": 8, "tl": 25, "cb": 0, "tb": 0, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
-      { "name": "backend.Services.Habitaciones.ObtenerHabitaciones", "rp": "backend_ObtenerHabitaciones.html", "cl": 0, "ucl": 8, "cal": 8, "tl": 25, "cb": 0, "tb": 0, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
-      { "name": "backend.Services.Habitaciones.ObtenerHabitacionesEstado", "rp": "backend_ObtenerHabitacionesEstado.html", "cl": 0, "ucl": 8, "cal": 8, "tl": 25, "cb": 0, "tb": 0, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
-      { "name": "backend.Services.Habitaciones.ObtenerHabitacionesRangoFecha", "rp": "backend_ObtenerHabitacionesRangoFecha.html", "cl": 0, "ucl": 7, "cal": 7, "tl": 24, "cb": 0, "tb": 0, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
-      { "name": "backend.Services.Habitaciones.ObtenerHabitacionesTipo", "rp": "backend_ObtenerHabitacionesTipo.html", "cl": 0, "ucl": 8, "cal": 8, "tl": 25, "cb": 0, "tb": 0, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
-      { "name": "backend.Services.Habitaciones.ObtenerHabitacionId", "rp": "backend_ObtenerHabitacionId.html", "cl": 0, "ucl": 8, "cal": 8, "tl": 25, "cb": 0, "tb": 0, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
-      { "name": "backend.Services.Huespedes.CrearHuesped", "rp": "backend_CrearHuesped.html", "cl": 0, "ucl": 16, "cal": 16, "tl": 37, "cb": 0, "tb": 4, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
-      { "name": "backend.Services.Huespedes.ObtenerHuespedConReservas", "rp": "backend_ObtenerHuespedConReservas.html", "cl": 0, "ucl": 43, "cal": 43, "tl": 65, "cb": 0, "tb": 4, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
+      { "name": "backend.Services.Huespedes.CrearHuesped", "rp": "backend_CrearHuesped.html", "cl": 16, "ucl": 0, "cal": 16, "tl": 37, "cb": 4, "tb": 4, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
+      { "name": "backend.Services.Huespedes.ObtenerHuespedConReservas", "rp": "backend_ObtenerHuespedConReservas.html", "cl": 43, "ucl": 0, "cal": 43, "tl": 65, "cb": 3, "tb": 4, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
       { "name": "backend.Services.Huespedes.ObtenerHuespedes", "rp": "backend_ObtenerHuespedes.html", "cl": 0, "ucl": 47, "cal": 47, "tl": 67, "cb": 0, "tb": 4, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
       { "name": "backend.Services.Huespedes.ObtenerHuespedesInactivos", "rp": "backend_ObtenerHuespedesInactivos.html", "cl": 0, "ucl": 7, "cal": 7, "tl": 23, "cb": 0, "tb": 0, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
-      { "name": "backend.Services.Huespedes.ObtenerHuespedId", "rp": "backend_ObtenerHuespedId.html", "cl": 0, "ucl": 8, "cal": 8, "tl": 25, "cb": 0, "tb": 0, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
-      { "name": "backend.Services.Reservas.CancelarReserva", "rp": "backend_CancelarReserva.html", "cl": 0, "ucl": 19, "cal": 19, "tl": 42, "cb": 0, "tb": 4, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
-      { "name": "backend.Services.Reservas.CheckInReserva", "rp": "backend_CheckInReserva.html", "cl": 0, "ucl": 36, "cal": 36, "tl": 66, "cb": 0, "tb": 10, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
-      { "name": "backend.Services.Reservas.CheckOutReserva", "rp": "backend_CheckOutReserva.html", "cl": 0, "ucl": 22, "cal": 22, "tl": 45, "cb": 0, "tb": 2, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
-      { "name": "backend.Services.Reservas.CrearReserva", "rp": "backend_CrearReserva.html", "cl": 0, "ucl": 46, "cal": 46, "tl": 79, "cb": 0, "tb": 14, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
-      { "name": "backend.Services.Reservas.MoraAtraso", "rp": "backend_MoraAtraso.html", "cl": 0, "ucl": 7, "cal": 7, "tl": 26, "cb": 0, "tb": 0, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
-      { "name": "backend.Services.Reservas.ObtenerReservaId", "rp": "backend_ObtenerReservaId.html", "cl": 0, "ucl": 46, "cal": 46, "tl": 67, "cb": 0, "tb": 2, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
-      { "name": "backend.Services.Reservas.ObtenerReservas", "rp": "backend_ObtenerReservas.html", "cl": 0, "ucl": 52, "cal": 52, "tl": 72, "cb": 0, "tb": 4, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
-      { "name": "backend.Services.Reservas.ObtenerReservasEstado", "rp": "backend_ObtenerReservasEstado.html", "cl": 0, "ucl": 50, "cal": 50, "tl": 70, "cb": 0, "tb": 4, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
+      { "name": "backend.Services.Huespedes.ObtenerHuespedId", "rp": "backend_ObtenerHuespedId.html", "cl": 8, "ucl": 0, "cal": 8, "tl": 25, "cb": 0, "tb": 0, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
     ]},
 ];
 
@@ -317,23 +303,9 @@ var metrics = [{ "name": "Crap Score", "abbreviation": "crp", "explanationUrl": 
 var historicCoverageExecutionTimes = [];
 
 var riskHotspotMetrics = [
-      { "name": "Crap Score", "explanationUrl": "https://googletesting.blogspot.de/2011/02/this-code-is-crap.html" },
-      { "name": "Cyclomatic complexity", "explanationUrl": "https://en.wikipedia.org/wiki/Cyclomatic_complexity" },
 ];
 
 var riskHotspots = [
-  {
-    "assembly": "backend", "class": "backend.Services.Reservas.CrearReserva", "reportPath": "backend_CrearReserva.html", "methodName": "Crear()", "methodShortName": "Crear()", "fileIndex": 0, "line": 27,
-    "metrics": [
-      { "value": 210, "exceeded": true },
-      { "value": 14, "exceeded": false },
-    ]},
-  {
-    "assembly": "backend", "class": "backend.Services.Reservas.CheckInReserva", "reportPath": "backend_CheckInReserva.html", "methodName": "CheckIn()", "methodShortName": "CheckIn()", "fileIndex": 0, "line": 22,
-    "metrics": [
-      { "value": 110, "exceeded": true },
-      { "value": 10, "exceeded": false },
-    ]},
 ];
 
 var branchCoverageAvailable = true;

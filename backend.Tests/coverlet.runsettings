@@ -6,7 +6,7 @@
         <Configuration>
 
           <Include>
-            [backend]backend.Services.*
+            [backend]backend.Services.Huespedes*
           </Include>
 
           <Exclude>
