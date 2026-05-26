@@ -21,7 +21,19 @@ namespace backend.Services.Reservas
         public async Task<bool> CheckIn(Guid Id)
         {
             var reserva = await reservasRepository.GetReservaId(Id);
+            if (reserva.EstadoReserva == Models.EstadoReserva.CANCELADA)
+            {
+                throw new InvalidOperationException(
+                    "No se puede realizar check-in de una reserva cancelada"
+                );
+            }
 
+            if (reserva.EstadoReserva == Models.EstadoReserva.EN_PROCESO)
+            {
+                throw new InvalidOperationException(
+                    "La reserva ya realizó check-in"
+                );
+            }
             var ahora = DateTime.UtcNow;
             var hoy = DateOnly.FromDateTime(ahora);
 

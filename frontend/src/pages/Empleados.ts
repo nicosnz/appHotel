@@ -122,7 +122,6 @@ export class Empleados extends HTMLElement {
             `;
         }).join('');
 
-        // Agregar evento para abrir detalle al hacer clic en la fila
         this.querySelectorAll('.employees__table-row').forEach(row => {
             row.addEventListener('click', () => {
                 const id = (row as HTMLElement).dataset.id;

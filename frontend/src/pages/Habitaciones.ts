@@ -18,9 +18,7 @@ export class Habitaciones extends HTMLElement {
         await this.loadRooms();
     }
 
-    /**
-     * Carga de datos desde el repositorio de Axios
-     */
+    
     private async loadRooms() {
         const tbody = this.querySelector('.rooms__table-body');
         try {
@@ -95,7 +93,6 @@ export class Habitaciones extends HTMLElement {
     }
 
     private initEvents() {
-        // Buscador por número o tipo
         this.querySelector('.rooms__search-input')?.addEventListener('input', (e) => {
             const term = (e.target as HTMLInputElement).value.toLowerCase();
             const filtered = this.allRooms.filter(r => 
@@ -105,7 +102,6 @@ export class Habitaciones extends HTMLElement {
             this.renderTable(filtered);
         });
 
-        // Filtros de estado (Botones)
         this.querySelectorAll('.rooms__filter-btn').forEach(btn => {
             btn.addEventListener('click', () => {
                 this.querySelectorAll('.rooms__filter-btn').forEach(b => b.classList.remove('rooms__filter-btn--active'));

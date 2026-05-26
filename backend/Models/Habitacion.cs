@@ -16,5 +16,15 @@ namespace backend.Models
         public int Piso { get; set; }
         public EstadoHabitacion EstadoHabitacion { get; set; }
         public List<Reserva> Reservas { get; set; } = new();
+
+        public static Habitacion Crear(int capacidadPersonas, decimal precio)
+        {
+            return new Habitacion
+            {
+              Id = Guid.NewGuid(),
+              CapacidadPersonas=capacidadPersonas,
+              Precio = precio
+            };
+        }
     }
 }

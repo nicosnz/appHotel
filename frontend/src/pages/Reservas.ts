@@ -44,8 +44,41 @@ export class Reservas extends HTMLElement{
                             <input type="text" id="reservaSearch" placeholder="Buscar por huésped" 
                                 style="width: 100%; padding: 10px 10px 10px 40px; border: 1px solid #e2e8f0; border-radius: 8px; outline: none; transition: border-color 0.2s;">
                         </div>
+                        
                     </div>
-                
+                    
+                    <div class="reservations__controls" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; gap: 15px; flex-wrap: wrap;">
+
+                        <div class="reservations__search-container" style="position: relative; flex: 1; max-width: 400px;">
+                                <svg style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: #94a3b8;" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                                <input type="date" id="reservaSearchDate1" placeholder="Buscar por huésped" 
+                                    style="width: 100%; padding: 10px 10px 10px 40px; border: 1px solid #e2e8f0; border-radius: 8px; outline: none; transition: border-color 0.2s;">
+                            </div>
+                        <div class="reservations__search-container" style="position: relative; flex: 1; max-width: 400px;">
+                                <svg style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: #94a3b8;" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                                <input type="date" id="reservaSearchDate2" placeholder="Buscar por huésped" 
+                                    style="width: 100%; padding: 10px 10px 10px 40px; border: 1px solid #e2e8f0; border-radius: 8px; outline: none; transition: border-color 0.2s;">
+                        </div>
+                        <button class="reservations__add-btn" id="searchDateButton">
+                            
+                            <span>Buscar</span>
+                        </button>
+                    </div>
+                    <div class="reservations__controls" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; gap: 15px; flex-wrap: wrap;">
+
+                        <div class="reservations__search-container" style="position: relative; flex: 1; max-width: 400px;">
+                                <svg style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: #94a3b8;" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                                <input type="number" id="reservaSearchPrecio" placeholder="Buscar por precio" 
+                                    style="width: 100%; padding: 10px 10px 10px 40px; border: 1px solid #e2e8f0; border-radius: 8px; outline: none; transition: border-color 0.2s;">
+                            </div>
+                        
+                        <button class="reservations__add-btn" id="searchPrecio">
+                            
+                            <span>Buscar</span>
+                        </button>
+                    </div>
+                    <div class="reservations__controls" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; gap: 15px; flex-wrap: wrap;">
+
                     <!-- ===== TABLA ===== -->
                     <div class="reservations__table-wrapper">
                         <table class="reservations__table">
@@ -662,7 +695,6 @@ export class Reservas extends HTMLElement{
                 }
             }
         };
-        // Dentro de tu método formulario() añade esto:
         const detailModal = this.querySelector('#detailModal') as HTMLElement;
         const btnCloseDetail = this.querySelector('#closeModal') as HTMLButtonElement;
         const btnCloseFooter = this.querySelector('#closeModalFooter') as HTMLButtonElement;
@@ -676,6 +708,38 @@ export class Reservas extends HTMLElement{
 
 
         const inputBusqueda = this.querySelector('#reservaSearch') as HTMLInputElement;
+        const inputBusqueda1 = this.querySelector('#reservaSearchDate1') as HTMLInputElement;
+        const inputBusqueda2 = this.querySelector('#reservaSearchDate2') as HTMLInputElement;
+        const busquedaPorFecha = this.querySelector('#searchDateButton') as HTMLInputElement;
+        const busquedaPorPrecio = this.querySelector('#reservaSearchPrecio') as HTMLInputElement;
+        const busquedaPorPrecioButton = this.querySelector('#searchPrecio') as HTMLInputElement;
+        busquedaPorFecha.addEventListener("click", () => {
+            let fechaStart = inputBusqueda1.value;
+            let fechaEnd = inputBusqueda2.value;
+            const filtradas = this.reservasActuales.filter(res => {
+                const checkInReserva = res.fechaCheckInEsperado.toString();
+                const checkOutReserva = res.fechaCheckOutEsperado.toString();
+
+                
+
+                const terminaDespuesDeQueEmpieceMiBusqueda = checkOutReserva >= fechaStart && checkOutReserva<=fechaEnd;
+                const empiezaAntesDeQueTermineMiBusqueda = checkInReserva <= fechaEnd && checkInReserva>=fechaStart;
+
+                return terminaDespuesDeQueEmpieceMiBusqueda && empiezaAntesDeQueTermineMiBusqueda;
+            });
+
+
+            this.renderizarTabla(filtradas);
+            
+        })
+        busquedaPorPrecioButton.addEventListener("click", () => {
+            const filtradas = this.reservasActuales.filter(res => res.precioTotal===Number(busquedaPorPrecio.value));
+
+
+            this.renderizarTabla(filtradas);
+            
+            
+        })
         inputBusqueda?.addEventListener('input', () => {
         const termino = inputBusqueda.value.toLowerCase().trim();
 

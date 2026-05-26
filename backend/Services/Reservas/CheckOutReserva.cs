@@ -18,41 +18,28 @@ namespace backend.Services.Reservas
             this.habitacionRepository = habitacionRepository;
         }
 
-        public async Task<bool> CheckOut(Guid Id)
+        public async Task<bool> CheckOut(Guid id)
         {
-            var reserva = await reservasRepository.GetReservaId(Id);
+            var reserva = await reservasRepository.GetReservaId(id);
 
             var ahora = DateTime.UtcNow;
             var hoy = DateOnly.FromDateTime(ahora);
 
-            decimal mora = 0;
-
             if (hoy > reserva.FechaCheckOutEsperado)
             {
-                mora = MoraAtraso.CalcularMora(
+                var mora = MoraAtraso.CalcularMora(
                     ahora,
                     reserva.FechaCheckOutEsperado.ToDateTime(TimeOnly.MinValue)
                 );
 
-                await reservasRepository.UpdateFechaCheckOutActual(reserva.Id, ahora);
                 await reservasRepository.UpdateMora(reserva.Id, mora);
-                await reservasRepository.UpdateEstadoReserva(reserva.Id, "TERMINADA");
-                await habitacionRepository.UpdateEstadoHabitacion(reserva.HabitacionId, "LIBRE");
-
-                return true;
             }
 
-            else if (hoy <= reserva.FechaCheckOutEsperado)
-            {
-                await reservasRepository.UpdateFechaCheckOutActual(reserva.Id, ahora);
-                await reservasRepository.UpdateEstadoReserva(reserva.Id, "TERMINADA");
-                await habitacionRepository.UpdateEstadoHabitacion(reserva.HabitacionId, "LIBRE");
+            await reservasRepository.UpdateFechaCheckOutActual(reserva.Id, ahora);
+            await reservasRepository.UpdateEstadoReserva(reserva.Id, "TERMINADA");
+            await habitacionRepository.UpdateEstadoHabitacion(reserva.HabitacionId, "LIBRE");
 
-                return true;
-            }
-
-            // ❌ Caso inválido
-            return false;
+            return true;
         }
     }
 }

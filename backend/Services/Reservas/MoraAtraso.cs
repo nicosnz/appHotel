@@ -14,7 +14,7 @@ namespace backend.Services.Reservas
             var atraso = fechaActual - fechaEsperada;
 
             decimal moraPorDia = 50; 
-            var diasAtraso = Math.Ceiling(atraso.TotalDays);
+            var diasAtraso = Math.Max(0, Math.Ceiling(atraso.TotalDays));
 
             decimal mora = (decimal)diasAtraso * moraPorDia;
             return mora;
