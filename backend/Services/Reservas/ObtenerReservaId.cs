@@ -21,7 +21,6 @@ namespace backend.Services.Reservas
 
         public async Task<ReservaResponseDto> GetReservaId(Guid Id)
         {
-            var id = 1;
             var reserva = await reservasRepository.GetReservaId(Id);
             var huespedes = reserva.Huespedes;
             var huespedesDto = new List<HuespedResponseDto>();
