@@ -29,8 +29,8 @@ namespace backend.Services.Huespedes
                 throw new InvalidOperationException("Este usuario ya existe");
             }
             var huesped = Huesped.Crear(nuevoHuesped.Nombre,nuevoHuesped.Apellido,nuevoHuesped.Documento,nuevoHuesped.Genero);
-            var id = await huespedRepository.Add(huesped);
-            return id;
+            var huesped_id = await huespedRepository.Add(huesped);
+            return huesped_id;
             
         }
     }
