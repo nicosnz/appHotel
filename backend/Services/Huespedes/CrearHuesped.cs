@@ -19,7 +19,8 @@ namespace backend.Services.Huespedes
 
         public async Task<Guid> Crear(HuespedCreateDto nuevoHuesped)
         {
-            if(nuevoHuesped.Documento.Length != 7)
+            int DOCUMENTO_LIMITE = 7;
+            if(nuevoHuesped.Documento.Length != DOCUMENTO_LIMITE)
             {
                 throw new InvalidOperationException("El documento debe de ser de 7 caracteres");
             }
