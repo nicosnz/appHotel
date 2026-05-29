@@ -25,16 +25,7 @@ namespace backend.Services.Reservas
 
         public async Task<Guid> Crear(ReservaCreateDto reservaNueva)
         {
-            var hoy = DateOnly.FromDateTime(DateTime.UtcNow);
-            if (reservaNueva.FechaCheckInEsperado < hoy)
-            {
-                throw new InvalidOperationException("La fecha de check-in no puede ser menor a hoy.");
-            }
-
-            if (reservaNueva.FechaCheckOutEsperado <= reservaNueva.FechaCheckInEsperado)
-            {
-                throw new InvalidOperationException("La fecha de check-out debe ser mayor al check-in.");
-            }
+            ValidarFechas.ValidarFechasCheck(reservaNueva);
 
             List<Huesped> huespedes = new List<Huesped>();
             foreach (var huespedId in reservaNueva.HuespedesIds)
@@ -51,6 +42,7 @@ namespace backend.Services.Reservas
                 reservaNueva.FechaCheckInEsperado,
                 reservaNueva.FechaCheckOutEsperado
             );
+
 
             if (!habitacionDisponible)
             {
