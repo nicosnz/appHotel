@@ -1,7 +1,6 @@
 import axios from 'axios';
 import type { ReservaCreateDTO, ReservaResponse } from './Reservas.interfaces';
 
-// URL base basada en tus ejemplos anteriores
 const URL_BASE = "http://localhost:5004/reserva";
 
 
@@ -68,7 +67,6 @@ export async function cancelarReserva(reservaId: string): Promise<void> {
         let mensaje = "No se pudo cancelar la reserva";
         
         if (error.response && error.response.data) {
-            // Capturamos el mensaje que viene del catch(InvalidOperationException) en .NET
             mensaje = error.response.data.mensaje || error.response.data;
         }
         

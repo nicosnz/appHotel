@@ -88,7 +88,6 @@ namespace backend.Tests.services.huespedes
         [Fact]
         public async Task Crear_LanzaError_SiHuespedYaExiste()
         {
-            // Arrange
             var dto = new HuespedCreateDto
             {
                 Nombre = "Juan",
@@ -114,13 +113,11 @@ namespace backend.Tests.services.huespedes
                 repositoryMock.Object
             );
 
-            // Act
             Func<Task> act = async () =>
             {
                 await service.Crear(dto);
             };
 
-            // Assert
             await act.Should()
                 .ThrowAsync<InvalidOperationException>()
                 .WithMessage(

@@ -5,22 +5,22 @@ import type { HuespedResponse } from './HuespedResponse';
 const URL = "http://localhost:5004/huesped";
 
     export async function createHuesped(data: HuespedForm): Promise<string> {
-    try {
-        const response = await axios.post(URL, data, { responseType: 'text' });
-        return response.data;
-    } catch (error: any) {
-        let mensaje = "Error desconocido";
+        try {
+            const response = await axios.post(URL, data, { responseType: 'text' });
+            return response.data;
+        } catch (error: any) {
+            let mensaje = "Error desconocido";
 
-        if (error.response) {
+            if (error.response) {
+                
+                const data = JSON.parse(error.response.data);
+                mensaje = data.mensaje;
+                
+            } 
             
-            const data = JSON.parse(error.response.data);
-            mensaje = data.mensaje;
-            
-        } 
-        
 
-        throw new Error(mensaje); 
-    }
+            throw new Error(mensaje); 
+        }
     }
     export async function getHuespedes(): Promise<HuespedResponse[]> {
         try {
