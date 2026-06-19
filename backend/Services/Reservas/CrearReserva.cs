@@ -31,25 +31,16 @@ namespace backend.Services.Reservas
             foreach (var huespedId in reservaNueva.HuespedesIds)
             {
                 var huesped = await huespedRepository.GetById(huespedId);
-                if(huesped.Activo == true)
+                if (huesped.Activo == true)
                 {
                     throw new InvalidOperationException("El usuario ya esta en otra reserva.");
                 }
-                
-            }
-            var habitacionDisponible = await habitacionRepository.EstaDisponible(
-                reservaNueva.HabitacionId,
-                reservaNueva.FechaCheckInEsperado,
-                reservaNueva.FechaCheckOutEsperado
-            );
 
-            if (!habitacionDisponible)
-            {
-                throw new InvalidOperationException("La habitación no está disponible en esas fechas.");
             }
+
 
             var habitacion = await habitacionRepository.GetHabitacionById(reservaNueva.HabitacionId);
-            if( reservaNueva.HuespedesIds.Count > habitacion.CapacidadPersonas)
+            if (reservaNueva.HuespedesIds.Count > habitacion.CapacidadPersonas)
             {
                 throw new InvalidOperationException("La cantidad de huespedes excede la capacidad de la habitación");
             }
@@ -58,14 +49,14 @@ namespace backend.Services.Reservas
                 var huesped = await huespedRepository.GetById(huespedId);
                 await huespedRepository.UpdateActivo(huesped.Id);
                 huespedes.Add(huesped);
-                
+
             }
-            await habitacionRepository.UpdateEstadoHabitacion(habitacion.Id,"RESERVADA");
+            await habitacionRepository.UpdateEstadoHabitacion(habitacion.Id, "RESERVADA");
             decimal precioTotal = habitacion.Precio * (reservaNueva.FechaCheckOutEsperado.DayNumber - reservaNueva.FechaCheckInEsperado.DayNumber);
-            var reserva = Reserva.Crear(huespedes,reservaNueva.HabitacionId,habitacion,reservaNueva.FechaCheckInEsperado,reservaNueva.FechaCheckOutEsperado,precioTotal);
+            var reserva = Reserva.Crear(huespedes, reservaNueva.HabitacionId, habitacion, reservaNueva.FechaCheckInEsperado, reservaNueva.FechaCheckOutEsperado, precioTotal);
             var reservaId = await reservasRepository.Add(reserva);
             return reservaId;
         }
-        
+
     }
 }
