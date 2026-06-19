@@ -37,17 +37,6 @@ namespace backend.Services.Reservas
                 }
                 
             }
-            var habitacionDisponible = await habitacionRepository.EstaDisponible(
-                reservaNueva.HabitacionId,
-                reservaNueva.FechaCheckInEsperado,
-                reservaNueva.FechaCheckOutEsperado
-            );
-
-
-            if (!habitacionDisponible)
-            {
-                throw new InvalidOperationException("La habitación no está disponible en esas fechas.");
-            }
             var habitacion = await habitacionRepository.GetHabitacionById(reservaNueva.HabitacionId);
             if( reservaNueva.HuespedesIds.Count > habitacion.CapacidadPersonas)
             {
