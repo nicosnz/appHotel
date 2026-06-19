@@ -45,6 +45,10 @@ namespace backend.Services.Reservas
             );
 
             var habitacion = await habitacionRepository.GetHabitacionById(reservaNueva.HabitacionId);
+            if (reservaNueva.HuespedesIds.Count > habitacion.CapacidadPersonas)
+            {
+                throw new InvalidOperationException("La cantidad de huespedes excede la capacidad de la habitación");
+            }
             foreach (var huespedId in reservaNueva.HuespedesIds)
             {
                 var huesped = await huespedRepository.GetById(huespedId);
