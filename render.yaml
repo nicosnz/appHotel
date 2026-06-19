@@ -1,6 +1,6 @@
 databases:
   - name: apphotel-db
-    databaseName: appHotel
+    databaseName: apphotel
     user: admin
     plan: free
 
@@ -16,7 +16,7 @@ services:
           name: apphotel-db
           property: connectionString
       - key: FRONTEND_URL
-        sync: false  # Completar con: https://apphotel-frontend.onrender.com
+        sync: false
 
   - type: web
     name: apphotel-frontend
@@ -26,4 +26,4 @@ services:
     staticPublishPath: ./dist
     envVars:
       - key: VITE_API_URL
-        sync: false  # Completar con: https://apphotel-backend.onrender.com
+        sync: false # Completar con: https://apphotel-backend.onrender.com
