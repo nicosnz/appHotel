@@ -1,11 +1,11 @@
 import "./index.css";
 
-import { Navbar } from "./components/navbar/Navbar";
+import "./components/navbar/Navbar";
+import "./pages/Home";
+import "./pages/Huespedes";
+import "./pages/Habitaciones";
+import "./pages/Reservas";
+import "./pages/Empleados";
 import { Router } from "./services/Router";
-import { Home } from "./pages/Home";
-import { Huespedes } from "./pages/Huespedes";
-import { Habitaciones } from "./pages/Habitaciones";
-import { Reservas } from "./pages/Reservas";
-import { Empleados } from "./pages/Empleados";
 
 Router.init();
