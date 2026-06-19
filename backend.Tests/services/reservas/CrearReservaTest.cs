@@ -1,6 +1,7 @@
 using Moq;
 using Xunit;
 using backend.Dtos.Reservas;
+using backend.Models;
 using backend.Repositories.Habitaciones;
 using backend.Repositories.Huespedes;
 using backend.Repositories.Reservas;
@@ -63,6 +64,38 @@ namespace backend.Tests.services.reservas
             );
 
             Assert.Equal("La fecha de check-out debe ser mayor al check-in.", ex.Message);
+        }
+
+        [Fact]
+        public async Task Crear_CuandoHabitacionYaEstaReservadaEnEsasFechas_DebeLanzarExcepcion()
+        {
+            var huespedId = Guid.NewGuid();
+            var habitacionId = Guid.NewGuid();
+
+            var huesped = Huesped.Crear("Juan", "Perez", "12345678", "M");
+
+            var dto = new ReservaCreateDto
+            {
+                HuespedesIds = [huespedId],
+                HabitacionId = habitacionId,
+                FechaCheckInEsperado = new DateOnly(2030, 3, 10),
+                FechaCheckOutEsperado = new DateOnly(2030, 3, 15),
+                PrecioTotal = 1000
+            };
+
+            _huespedRepoMock
+                .Setup(r => r.GetById(huespedId))
+                .ReturnsAsync(huesped);
+
+            _habitacionRepoMock
+                .Setup(r => r.EstaDisponible(habitacionId, dto.FechaCheckInEsperado, dto.FechaCheckOutEsperado))
+                .ReturnsAsync(false);
+
+            var ex = await Assert.ThrowsAsync<InvalidOperationException>(
+                () => _crearReserva.Crear(dto)
+            );
+
+            Assert.Equal("La habitación no está disponible en esas fechas.", ex.Message);
         }
     }
 }
