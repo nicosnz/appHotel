@@ -97,5 +97,57 @@ namespace backend.Tests.services.reservas
 
             Assert.Equal("La habitación no está disponible en esas fechas.", ex.Message);
         }
+
+        [Fact]
+        public async Task Crear_CuandoCantidadDeHuespedesSuperaCapacidadDeHabitacion_DebeLanzarExcepcion()
+        {
+            var huespedId1 = Guid.NewGuid();
+            var huespedId2 = Guid.NewGuid();
+            var huespedId3 = Guid.NewGuid();
+            var habitacionId = Guid.NewGuid();
+
+            var huesped1 = Huesped.Crear("Juan", "Perez", "11111111", "M");
+            var huesped2 = Huesped.Crear("Maria", "Lopez", "22222222", "F");
+            var huesped3 = Huesped.Crear("Carlos", "Garcia", "33333333", "M");
+
+            var habitacionConCapacidadDos = new Habitacion
+            {
+                Id = habitacionId,
+                NumHabitacion = "101",
+                CapacidadPersonas = 2,
+                Precio = 300,
+                TipoHabitacion = TipoHabitacion.DOBLE_INDIVIDUAL,
+                TipoCama = TipoCama.INDIVIDUAL,
+                Piso = 1,
+                EstadoHabitacion = EstadoHabitacion.LIBRE
+            };
+
+            var dto = new ReservaCreateDto
+            {
+                HuespedesIds = [huespedId1, huespedId2, huespedId3],
+                HabitacionId = habitacionId,
+                FechaCheckInEsperado = new DateOnly(2030, 5, 1),
+                FechaCheckOutEsperado = new DateOnly(2030, 5, 5),
+                PrecioTotal = 1200
+            };
+
+            _huespedRepoMock.Setup(r => r.GetById(huespedId1)).ReturnsAsync(huesped1);
+            _huespedRepoMock.Setup(r => r.GetById(huespedId2)).ReturnsAsync(huesped2);
+            _huespedRepoMock.Setup(r => r.GetById(huespedId3)).ReturnsAsync(huesped3);
+
+            _habitacionRepoMock
+                .Setup(r => r.EstaDisponible(habitacionId, dto.FechaCheckInEsperado, dto.FechaCheckOutEsperado))
+                .ReturnsAsync(true);
+
+            _habitacionRepoMock
+                .Setup(r => r.GetHabitacionById(habitacionId))
+                .ReturnsAsync(habitacionConCapacidadDos);
+
+            var ex = await Assert.ThrowsAsync<InvalidOperationException>(
+                () => _crearReserva.Crear(dto)
+            );
+
+            Assert.Equal("La cantidad de huespedes excede la capacidad de la habitación", ex.Message);
+        }
     }
 }
