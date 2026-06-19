@@ -8,19 +8,13 @@ using Npgsql.Replication;
 using backend.Models;
 namespace backend.Services.Huespedes
 {
-    public class CrearHuesped
+    public class CrearHuesped(IHuespedRepository huespedRepository)
     {
-        private readonly IHuespedRepository huespedRepository;
-
-        public CrearHuesped(IHuespedRepository huespedRepository)
-        {
-            this.huespedRepository = huespedRepository;
-        }
+        private const int LongitudDocumento = 7;
 
         public async Task<Guid> Crear(HuespedCreateDto nuevoHuesped)
         {
-            int DOCUMENTO_LIMITE = 7;
-            if(nuevoHuesped.Documento.Length != DOCUMENTO_LIMITE)
+            if(nuevoHuesped.Documento.Length != LongitudDocumento)
             {
                 throw new InvalidOperationException("El documento debe de ser de 7 caracteres");
             }
