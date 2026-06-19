@@ -7,7 +7,7 @@ namespace backend.Services.Reservas
 {
     public class MoraAtraso
     {
-        public static int MORA_POR_DIA = 50;
+        private const int MoraPorDia = 50;
         public static decimal CalcularMora(DateTime fechaActual, DateTime fechaEsperada)
         {
             
@@ -17,7 +17,7 @@ namespace backend.Services.Reservas
             
             var diasAtraso = Math.Max(0, Math.Ceiling(atraso.TotalDays));
 
-            decimal mora = (decimal)diasAtraso * MORA_POR_DIA;
+            decimal mora = (decimal)diasAtraso * MoraPorDia;
             return mora;
             
             
