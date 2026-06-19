@@ -25,8 +25,10 @@ namespace backend.Services.Reservas
 
         public async Task<Guid> Crear(ReservaCreateDto reservaNueva)
         {
-            
-            ValidarFechas.ValidarFechasCheck(reservaNueva);
+            if (reservaNueva.FechaCheckOutEsperado <= reservaNueva.FechaCheckInEsperado)
+            {
+                throw new InvalidOperationException("La fecha de check-out debe ser mayor al check-in.");
+            }
 
             List<Huesped> huespedes = new List<Huesped>();
             foreach (var huespedId in reservaNueva.HuespedesIds)
