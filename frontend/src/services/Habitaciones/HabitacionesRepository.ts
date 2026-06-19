@@ -1,11 +1,11 @@
-import axios from 'axios';
+import api from '../api';
 import type { Habitacion } from '../Habitaciones/HabitacionResponse'
 
-const API_URL = 'http://localhost:5004/habitacion'; 
+const API_URL = '/habitacion';
 
 export const getHabitaciones = async (): Promise<Habitacion[]> => {
     try {
-        const response = await axios.get<Habitacion[]>(API_URL);
+        const response = await api.get<Habitacion[]>(API_URL);
         return response.data;
     } catch (error) {
         console.error("Error al obtener habitaciones:", error);
@@ -14,7 +14,7 @@ export const getHabitaciones = async (): Promise<Habitacion[]> => {
 };
 export const getHabitacionesDisponibles = async (fechaInicio: string, fechaFin: string): Promise<Habitacion[]> => {
     try {
-        const response = await axios.get<Habitacion[]>(`${API_URL}/disponibles`, {
+        const response = await api.get<Habitacion[]>(`${API_URL}/disponibles`, {
             params: {
                 fechaInicio,
                 fechaFin

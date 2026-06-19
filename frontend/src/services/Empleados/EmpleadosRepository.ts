@@ -1,13 +1,13 @@
-import axios from 'axios';
+import api from '../api';
 import type { EmpleadoResponse } from './EmpleadosResponse';
 
-const URL_BASE = "http://localhost:5004/api/empleados";
+const URL_BASE = "/api/empleados";
 
 
 
 export async function getEmpleados(): Promise<EmpleadoResponse[]> {
     try {
-        const response = await axios.get<EmpleadoResponse[]>(URL_BASE);
+        const response = await api.get<EmpleadoResponse[]>(URL_BASE);
         return response.data;
     } catch (error) {
         console.error("Error al obtener empleados:", error);

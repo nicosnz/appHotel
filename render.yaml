@@ -1,0 +1,29 @@
+databases:
+  - name: apphotel-db
+    databaseName: appHotel
+    user: admin
+    plan: free
+
+services:
+  - type: web
+    name: apphotel-backend
+    env: docker
+    dockerfilePath: ./Dockerfile
+    plan: free
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: apphotel-db
+          property: connectionString
+      - key: FRONTEND_URL
+        sync: false  # Completar con: https://apphotel-frontend.onrender.com
+
+  - type: web
+    name: apphotel-frontend
+    env: static
+    rootDir: frontend
+    buildCommand: npm install && npm run build
+    staticPublishPath: ./dist
+    envVars:
+      - key: VITE_API_URL
+        sync: false  # Completar con: https://apphotel-backend.onrender.com
