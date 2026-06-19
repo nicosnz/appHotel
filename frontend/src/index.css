@@ -1,1 +1,9 @@
+@import "./vendor/normalize.css";
+@import "./base.css";
+@import "./components/form/form.css";
 @import "./components/navbar/navbar.css";
+@import "./components/home/home.css";
+@import "./components/huespedes/huespedes.css";
+@import "./components/habitaciones/habitaciones.css";
+@import "./components/reservas/reservas.css";
+@import "./components/empleados/empleados.css";

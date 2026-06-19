@@ -1,0 +1,501 @@
+/* ============================================================
+   habitaciones.css  –  Pantalla de Habitaciones | Hotel Nicosan
+   Metodología: BEM  (Block__Element--Modifier)
+   ============================================================ */
+
+:root {
+  --color-primary: #335c67;
+  --color-secondary: #fff3b0;
+  --color-accent: #e09f3e;
+  --color-danger: #9e2a2b;
+  --color-dark: #540b0e;
+  --color-bg: #ffffff;
+  --color-text: #1a1a1a;
+  --color-border: #e0e0e0;
+  --font-primary: 'Montserrat', sans-serif;
+  --spacing-xs: 0.4rem;
+  --spacing-sm: 0.8rem;
+  --spacing-md: 1.6rem;
+  --spacing-lg: 2.4rem;
+  --spacing-xl: 3.2rem;
+  --radius-sm: 0.4rem;
+  --radius-md: 0.8rem;
+  --radius-lg: 1.6rem;
+
+  /* Tokens propios de esta sección */
+  --rooms-shadow-card: 0 2px 12px rgba(0, 0, 0, 0.07);
+  --rooms-transition: 0.2s ease;
+}
+
+/* ============================================================
+   BLOCK: rooms
+   ============================================================ */
+.rooms {
+  margin-left: 24rem; /* offset del sidebar fijo */
+  padding: var(--spacing-xl) var(--spacing-lg);
+  animation: fadeUp 0.4s ease both;
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(1.2rem); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── ELEMENT: header ── */
+.rooms__header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--spacing-md);
+  margin-bottom: var(--spacing-lg);
+  flex-wrap: wrap;
+}
+
+.rooms__title-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+}
+
+.rooms__title {
+  font-size: 2.8rem;
+  font-weight: 700;
+  color: var(--color-primary);
+  line-height: 1.2;
+  letter-spacing: -0.04rem;
+}
+
+.rooms__subtitle {
+  font-size: 1.4rem;
+  color: #6b7280;
+  font-weight: 400;
+}
+
+/* ── ELEMENT: add button ── */
+.rooms__add-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  background-color: var(--color-primary);
+  color: #ffffff;
+  font-family: var(--font-primary);
+  font-size: 1.4rem;
+  font-weight: 600;
+  padding: 1rem var(--spacing-md);
+  border-radius: var(--radius-md);
+  border: none;
+  cursor: pointer;
+  transition: background-color var(--rooms-transition),
+              transform var(--rooms-transition),
+              box-shadow var(--rooms-transition);
+  white-space: nowrap;
+}
+
+.rooms__add-btn:hover {
+  background-color: #274d56;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 14px rgba(51, 92, 103, 0.3);
+}
+
+.rooms__add-btn:active {
+  transform: translateY(0);
+}
+
+.rooms__add-btn-icon {
+  font-size: 2rem;
+  line-height: 1;
+  font-weight: 400;
+}
+
+/* ── ELEMENT: filters ── */
+.rooms__filters {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  margin-bottom: var(--spacing-md);
+  flex-wrap: wrap;
+}
+
+/* ── ELEMENT: filter button ── */
+.rooms__filter-btn {
+  font-family: var(--font-primary);
+  font-size: 1.4rem;
+  font-weight: 500;
+  color: #6b7280;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0.8rem var(--spacing-md);
+  border-radius: var(--radius-md);
+  transition: color var(--rooms-transition),
+              background-color var(--rooms-transition);
+}
+
+.rooms__filter-btn:hover {
+  color: var(--color-primary);
+  background-color: #f0f5f6;
+}
+
+/* MODIFIER: active */
+.rooms__filter-btn--active {
+  color: var(--color-primary);
+  background-color: #dceef1;
+  font-weight: 600;
+}
+
+/* ── ELEMENT: search ── */
+.rooms__search {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  background-color: #f9fafb;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: 0.8rem 1.2rem;
+  margin-left: auto;
+  transition: border-color var(--rooms-transition),
+              box-shadow var(--rooms-transition);
+}
+
+.rooms__search:focus-within {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(51, 92, 103, 0.1);
+}
+
+.rooms__search-icon {
+  width: 1.6rem;
+  height: 1.6rem;
+  color: #9ca3af;
+  flex-shrink: 0;
+}
+
+.rooms__search-input {
+  border: none;
+  background: none;
+  font-family: var(--font-primary);
+  font-size: 1.4rem;
+  color: var(--color-text);
+  outline: none;
+  width: 20rem;
+}
+
+.rooms__search-input::placeholder {
+  color: #9ca3af;
+}
+
+/* ── ELEMENT: table wrapper ── */
+.rooms__table-wrapper {
+  background-color: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: var(--rooms-shadow-card);
+}
+
+/* ── ELEMENT: table ── */
+.rooms__table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+/* ── ELEMENT: table head ── */
+.rooms__table-head {
+  background-color: #f8fafc;
+  border-bottom: 1px solid var(--color-border);
+}
+
+/* ── ELEMENT: table th ── */
+.rooms__table-th {
+  padding: 1.4rem var(--spacing-md);
+  text-align: left;
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #6b7280;
+  text-transform: uppercase;
+  letter-spacing: 0.06rem;
+  white-space: nowrap;
+}
+
+/* MODIFIER: actions column */
+.rooms__table-th--actions {
+  text-align: center;
+}
+
+/* ── ELEMENT: table row ── */
+.rooms__table-row {
+  border-bottom: 1px solid var(--color-border);
+  transition: background-color var(--rooms-transition);
+}
+
+.rooms__table-row:last-child {
+  border-bottom: none;
+}
+
+.rooms__table-row:hover {
+  background-color: #f8fafc;
+}
+
+/* ── ELEMENT: table td ── */
+.rooms__table-td {
+  padding: 1.6rem var(--spacing-md);
+  font-size: 1.4rem;
+  color: var(--color-text);
+  vertical-align: middle;
+}
+
+/* MODIFIER: price column */
+.rooms__table-td--price {
+  font-weight: 700;
+  color: var(--color-primary);
+}
+
+/* MODIFIER: actions column */
+.rooms__table-td--actions {
+  text-align: center;
+  white-space: nowrap;
+}
+
+/* ── ELEMENT: room info (icono + nombre) ── */
+.rooms__room-info {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
+/* ── ELEMENT: room icon ── */
+.rooms__room-icon {
+  width: 3.6rem;
+  height: 3.6rem;
+  background-color: #dceef1;
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  color: var(--color-primary);
+}
+
+.rooms__room-icon svg {
+  width: 1.8rem;
+  height: 1.8rem;
+}
+
+/* ── ELEMENT: room name ── */
+.rooms__room-name {
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+/* ── ELEMENT: type tag ── */
+.rooms__type-tag {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.4rem 1rem;
+  border-radius: var(--radius-sm);
+  font-size: 1.2rem;
+  font-weight: 600;
+}
+
+/* MODIFIER: simple */
+.rooms__type-tag--simple {
+  background-color: #f3f4f6;
+  color: #374151;
+}
+
+/* MODIFIER: doble */
+.rooms__type-tag--doble {
+  background-color: #eff6ff;
+  color: #1d4ed8;
+}
+
+/* MODIFIER: suite */
+.rooms__type-tag--suite {
+  background-color: #fef9c3;
+  color: #854d0e;
+}
+
+/* ── ELEMENT: badge ── */
+.rooms__badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.4rem 1rem;
+  border-radius: 10rem;
+  font-size: 1.2rem;
+  font-weight: 600;
+}
+
+/* MODIFIER: libre */
+.rooms__badge--free {
+  background-color: #dcfce7;
+  color: #166534;
+}
+
+/* MODIFIER: ocupada */
+.rooms__badge--occupied {
+  background-color: #fee2e2;
+  color: #991b1b;
+}
+
+/* ── ELEMENT: action buttons ── */
+.rooms__action-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 3.2rem;
+  height: 3.2rem;
+  border-radius: var(--radius-sm);
+  border: none;
+  cursor: pointer;
+  transition: background-color var(--rooms-transition),
+              transform var(--rooms-transition);
+  margin: 0 0.2rem;
+}
+
+.rooms__action-btn svg {
+  width: 1.6rem;
+  height: 1.6rem;
+}
+
+.rooms__action-btn:hover {
+  transform: scale(1.1);
+}
+
+/* MODIFIER: view */
+.rooms__action-btn--view {
+  background-color: #f3f4f6;
+  color: #374151;
+}
+
+.rooms__action-btn--view:hover {
+  background-color: #e5e7eb;
+}
+
+/* MODIFIER: edit */
+.rooms__action-btn--edit {
+  background-color: #e0f2fe;
+  color: #0369a1;
+}
+
+.rooms__action-btn--edit:hover {
+  background-color: #bae6fd;
+}
+
+/* MODIFIER: delete */
+.rooms__action-btn--delete {
+  background-color: #fee2e2;
+  color: var(--color-danger);
+}
+
+.rooms__action-btn--delete:hover {
+  background-color: #fecaca;
+}
+
+/* ── ELEMENT: pagination ── */
+.rooms__pagination {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: var(--spacing-lg);
+  flex-wrap: wrap;
+  gap: var(--spacing-md);
+}
+
+.rooms__pagination-info {
+  font-size: 1.4rem;
+  color: #6b7280;
+}
+
+.rooms__pagination-controls {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+}
+
+/* ── ELEMENT: page button ── */
+.rooms__page-btn {
+  width: 3.6rem;
+  height: 3.6rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-border);
+  background-color: var(--color-bg);
+  font-family: var(--font-primary);
+  font-size: 1.4rem;
+  font-weight: 500;
+  color: #374151;
+  cursor: pointer;
+  transition: all var(--rooms-transition);
+}
+
+.rooms__page-btn:hover:not(:disabled) {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+  background-color: #f0f5f6;
+}
+
+.rooms__page-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* MODIFIER: active page */
+.rooms__page-btn--active {
+  background-color: var(--color-primary);
+  border-color: var(--color-primary);
+  color: #ffffff;
+  font-weight: 700;
+}
+
+.rooms__page-btn--active:hover {
+  background-color: #274d56 !important;
+  border-color: #274d56 !important;
+  color: #ffffff !important;
+}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media (max-width: 768px) {
+  .rooms {
+    margin-left: 0;
+  }
+
+  .rooms__title {
+    font-size: 2.2rem;
+  }
+
+  .rooms__search-input {
+    width: 14rem;
+  }
+
+  /* Ocultar columna piso en tablet */
+  .rooms__table th:nth-child(4),
+  .rooms__table td:nth-child(4) {
+    display: none;
+  }
+}
+
+@media (max-width: 480px) {
+  .rooms__filters {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .rooms__search {
+    margin-left: 0;
+    width: 100%;
+  }
+
+  .rooms__search-input {
+    width: 100%;
+  }
+
+  /* Ocultar tipo de habitación en móvil pequeño */
+  .rooms__table th:nth-child(3),
+  .rooms__table td:nth-child(3) {
+    display: none;
+  }
+}
