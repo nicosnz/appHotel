@@ -46,6 +46,23 @@ namespace backend.Tests.services.reservas
             Assert.Equal("La fecha de check-out debe ser mayor al check-in.", ex.Message);
         }
 
+        [Fact]
+        public async Task Crear_CuandoFechaCheckOutEsAnteriorACheckIn_DebeLanzarExcepcion()
+        {
+            var dto = new ReservaCreateDto
+            {
+                HuespedesIds = [Guid.NewGuid()],
+                HabitacionId = Guid.NewGuid(),
+                FechaCheckInEsperado = new DateOnly(2030, 1, 10),
+                FechaCheckOutEsperado = new DateOnly(2030, 1, 5),
+                PrecioTotal = 500
+            };
 
+            var ex = await Assert.ThrowsAsync<InvalidOperationException>(
+                () => _crearReserva.Crear(dto)
+            );
+
+            Assert.Equal("La fecha de check-out debe ser mayor al check-in.", ex.Message);
+        }
     }
 }
